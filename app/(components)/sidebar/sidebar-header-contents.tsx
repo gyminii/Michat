@@ -23,7 +23,7 @@ import Link from "next/link";
 const SidebarHeaderContents = () => {
 	const paths = useNavigation();
 	const activePath = paths.find((path) => path.active);
-	const { icon: Icon, name } = activePath || {};
+	const { name } = activePath || {};
 	const { isMobile } = useSidebar();
 	return (
 		<SidebarMenu>
@@ -35,7 +35,6 @@ const SidebarHeaderContents = () => {
 							className="border data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						>
 							<div className="dark:bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-								{/* {Icon && <Icon className="size-4" />} */}
 								<Image
 									src="/logo.svg"
 									alt="logo"

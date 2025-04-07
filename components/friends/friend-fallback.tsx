@@ -1,8 +1,6 @@
-import React from "react";
+import Image from "next/image";
 import { Card } from "../ui/card";
 import { ResizablePanel } from "../ui/resizable";
-import { HeartCrack } from "lucide-react";
-import Image from "next/image";
 
 const FriendFallback = () => {
 	return (

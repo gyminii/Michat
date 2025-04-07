@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/sidebar";
 import { useNavigation } from "@/hooks/use-navigation";
 import { cn } from "@/lib/utils";
-import { PersonStanding } from "lucide-react";
 import Link from "next/link";
 
 const Friends = () => {
