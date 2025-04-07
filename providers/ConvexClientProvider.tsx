@@ -1,6 +1,12 @@
 "use client";
 import LoadingLogo from "@/components/shared/loading-logo";
-import { ClerkProvider, SignInButton, useAuth } from "@clerk/nextjs";
+import {
+	ClerkProvider,
+	RedirectToSignIn,
+	SignedIn,
+	SignedOut,
+	useAuth,
+} from "@clerk/nextjs";
 import {
 	Authenticated,
 	AuthLoading,
@@ -19,10 +25,13 @@ const ConvexClientProvider = ({ children }: Props) => {
 	return (
 		<ClerkProvider>
 			<ConvexProviderWithClerk useAuth={useAuth} client={convex}>
-				<Unauthenticated>
+				{/* <Unauthenticated>
 					<SignInButton />
-				</Unauthenticated>
+				</Unauthenticated> */}
 				<Authenticated>{children}</Authenticated>
+				<Unauthenticated>
+					<RedirectToSignIn />
+				</Unauthenticated>
 				<AuthLoading>
 					<LoadingLogo />
 				</AuthLoading>

@@ -17,7 +17,7 @@ const Friends = () => {
 	return (
 		<SidebarGroup>
 			<SidebarMenu className="gap-5">
-				{paths.map(({ name, href, count, active }) => (
+				{paths.map(({ name, href, icon: Icon, count, active }) => (
 					<Link href={href} key={name}>
 						<SidebarMenuItem
 							key="friends"
@@ -27,7 +27,7 @@ const Friends = () => {
 						>
 							<SidebarMenuButton asChild>
 								<div>
-									<PersonStanding />
+									<Icon />
 									<span>{name}</span>
 								</div>
 							</SidebarMenuButton>

@@ -17,6 +17,7 @@ import {
 import { useNavigation } from "@/hooks/use-navigation";
 import { cn } from "@/lib/utils";
 import { ChevronsUpDown } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 const SidebarHeaderContents = () => {
@@ -31,10 +32,18 @@ const SidebarHeaderContents = () => {
 					<DropdownMenuTrigger asChild>
 						<SidebarMenuButton
 							size="lg"
-							className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+							className="border data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						>
-							<div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-								{Icon && <Icon className="size-4" />}
+							<div className="dark:bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+								{/* {Icon && <Icon className="size-4" />} */}
+								<Image
+									src="/logo.svg"
+									alt="logo"
+									width={100}
+									height={100}
+									priority
+									className="animate-pulse duration-800"
+								/>
 							</div>
 							<div className="grid flex-1 text-left text-sm leading-tight">
 								<span className="truncate font-medium">Michat</span>
@@ -62,7 +71,7 @@ const SidebarHeaderContents = () => {
 									})}
 								>
 									<div className="flex size-6 items-center justify-center rounded-md border">
-										<Icon className="size-3.5 shrink-0" />
+										<Icon className="size-3.5 shrink-0 dark:text-white" />
 									</div>
 									{name}
 									{!!count && (
