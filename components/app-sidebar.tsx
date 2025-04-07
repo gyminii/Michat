@@ -21,9 +21,7 @@ import {
 	SidebarFooter,
 	SidebarHeader,
 	SidebarRail,
-	useSidebar,
 } from "@/components/ui/sidebar";
-import { useNavigation } from "@/hooks/use-navigation";
 import { UserButton } from "@clerk/nextjs";
 import { ThemeToggle } from "./ui/theme/theme-toggle";
 
@@ -147,8 +145,8 @@ const data = {
 	],
 };
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-	const paths = useNavigation();
-	const { isMobile } = useSidebar();
+	// const paths = useNavigation();
+	// const { isMobile } = useSidebar();
 	return (
 		<Sidebar collapsible="icon" {...props}>
 			<SidebarHeader>

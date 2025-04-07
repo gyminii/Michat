@@ -12,7 +12,6 @@ import { useMutationState } from "@/hooks/use-mutation-state";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ConvexError } from "convex/values";
 import { SendHorizonal } from "lucide-react";
-import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import TextareaAutosize from "react-textarea-autosize";
 import { toast } from "sonner";
@@ -22,7 +21,7 @@ const MessageSchema = z.object({
 	content: z.string().min(1, { message: "This field can't be empty" }),
 });
 const ChatInput = () => {
-	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+	// const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 	// const [cursorPosition, setCursorPosition] = useState(0);
 	const { chatId } = useChat();
 	const { mutate: createMessage, pending: createPending } = useMutationState(
@@ -36,8 +35,12 @@ const ChatInput = () => {
 	});
 	const { reset, handleSubmit, control } = form;
 
-	const handleInputChange = (event: any) => {
-		const { value, selectionStart } = event.target;
+	const handleInputChange = (
+		event:
+			| React.ChangeEvent<HTMLTextAreaElement>
+			| React.MouseEvent<HTMLTextAreaElement>
+	) => {
+		const { value, selectionStart } = event.target as HTMLTextAreaElement;
 		if (selectionStart !== null) {
 			form.setValue("content", value);
 			// setCursorPosition(selectionStart);

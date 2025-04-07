@@ -16,19 +16,8 @@ import {
 } from "@/components/ui/sidebar";
 import { useNavigation } from "@/hooks/use-navigation";
 import { cn } from "@/lib/utils";
-import { ChevronsUpDown, type LucideIcon } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
-type Path = {
-	name: string;
-	href: string;
-	icon: LucideIcon;
-	active: boolean;
-	count?: number;
-};
-type Props = {
-	paths: Path[];
-	// isMobile: boolean;
-};
 
 const SidebarHeaderContents = () => {
 	const paths = useNavigation();

@@ -6,9 +6,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useMutationState } from "@/hooks/use-mutation-state";
 import { ConvexError } from "convex/values";
 import { Check, User, X } from "lucide-react";
-import React from "react";
 import { toast } from "sonner";
-import { VariantProps } from "class-variance-authority";
 
 type Props = {
 	id: Id<"requests">;

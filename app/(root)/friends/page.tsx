@@ -1,18 +1,15 @@
 "use client";
-import ChatFallback from "@/components/chats/chat-fallback";
-import ItemList from "@/components/shared/items-list/item-list";
-import React from "react";
-import AddFriendDialog from "./_components/add-friend-dialog";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { Loader2 } from "lucide-react";
-import Request from "./_components/request";
+import FriendFallback from "@/components/friends/friend-fallback";
 import {
 	ResizableHandle,
 	ResizablePanel,
 	ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import FriendFallback from "@/components/friends/friend-fallback";
+import { api } from "@/convex/_generated/api";
+import { useQuery } from "convex/react";
+import { Loader2 } from "lucide-react";
+import AddFriendDialog from "./_components/add-friend-dialog";
+import Request from "./_components/request";
 
 const Friends = () => {
 	const requests = useQuery(api.requests.get);

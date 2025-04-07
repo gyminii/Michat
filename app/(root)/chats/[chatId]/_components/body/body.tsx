@@ -18,7 +18,7 @@ type Props = {
 		_id?: Id<"users">;
 		lastSeenMessageId?: Id<"messages">;
 		username?: string;
-		[key: string]: any;
+		[key: string]: unknown;
 	}[];
 	// callType: "audio" | "video" | null;
 	// setCallType: Dispatch<SetStateAction<"audio" | "video" | null>>;
@@ -40,6 +40,7 @@ const Body = ({ members }: Props) => {
 				messageId: messages[0].message._id,
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [messages?.length, chatId, markRead]);
 
 	const formatSeenBy = (names: string[]) => {
