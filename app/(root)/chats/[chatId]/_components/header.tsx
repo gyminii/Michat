@@ -7,8 +7,9 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, Settings } from "lucide-react";
+import { ChevronLeft, Phone, Settings, Video } from "lucide-react";
 import Link from "next/link";
+import { Dispatch, SetStateAction } from "react";
 
 type Props = {
 	imageUrl?: string;
@@ -18,9 +19,10 @@ type Props = {
 		destructive: boolean;
 		onClick: () => void;
 	}[];
+	setCallType: Dispatch<SetStateAction<"audio" | "video" | null>>;
 };
 
-const Header = ({ imageUrl, name, options }: Props) => (
+const Header = ({ imageUrl, name, options, setCallType }: Props) => (
 	<div className="w-full flex items-center justify-between p-4 border-b-1">
 		<div className="flex items-center gap-2">
 			<Link className="block lg:hidden" href="/chats">
@@ -33,6 +35,20 @@ const Header = ({ imageUrl, name, options }: Props) => (
 			<h2 className="font-semibold">{name}</h2>
 		</div>
 		<div className="flex gap-2">
+			<Button
+				variant="secondary"
+				size="icon"
+				onClick={() => setCallType("audio")}
+			>
+				<Phone />
+			</Button>
+			<Button
+				variant="secondary"
+				size="icon"
+				onClick={() => setCallType("video")}
+			>
+				<Video />
+			</Button>
 			{options ? (
 				<DropdownMenu>
 					<DropdownMenuTrigger>

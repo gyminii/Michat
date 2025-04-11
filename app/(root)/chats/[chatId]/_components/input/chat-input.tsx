@@ -16,13 +16,19 @@ import { useForm } from "react-hook-form";
 import TextareaAutosize from "react-textarea-autosize";
 import { toast } from "sonner";
 import { z } from "zod";
-
+import ActionsPopover from "./actions-popover";
+import { useEffect, useRef, useState } from "react";
+import { useTheme } from "next-themes";
+import EmojiPicker, { Theme } from "emoji-picker-react";
 const MessageSchema = z.object({
 	content: z.string().min(1, { message: "This field can't be empty" }),
 });
 const ChatInput = () => {
-	// const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-	// const [cursorPosition, setCursorPosition] = useState(0);
+	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+	const emojiPickerRef = useRef<HTMLDivElement | null>(null);
+	const [cursorPosition, setCursorPosition] = useState(0);
+	const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+	const { theme } = useTheme();
 	const { chatId } = useChat();
 	const { mutate: createMessage, pending: createPending } = useMutationState(
 		api.message.create
@@ -33,7 +39,7 @@ const ChatInput = () => {
 			content: "",
 		},
 	});
-	const { reset, handleSubmit, control } = form;
+	const { reset, handleSubmit, control, watch, setValue } = form;
 
 	const handleInputChange = (
 		event:
@@ -43,17 +49,48 @@ const ChatInput = () => {
 		const { value, selectionStart } = event.target as HTMLTextAreaElement;
 		if (selectionStart !== null) {
 			form.setValue("content", value);
-			// setCursorPosition(selectionStart);
+			setCursorPosition(selectionStart);
 		}
 	};
+	// Emoji Picker-----------------------------------------------------
+	const content = watch("content", "");
 
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				emojiPickerRef.current &&
+				!emojiPickerRef.current.contains(event.target as Node)
+			) {
+				setEmojiPickerOpen(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, []);
+
+	const insertEmoji = (emoji: string) => {
+		const newText = [
+			content.substring(0, cursorPosition),
+			emoji,
+			content.substring(cursorPosition),
+		].join("");
+
+		setValue("content", newText);
+
+		setCursorPosition(cursorPosition + emoji.length);
+	};
+	// -----------------------------------------------------------------
 	const onSubmit = async (values: z.infer<typeof MessageSchema>) => {
 		createMessage({
 			chatId,
 			type: "text",
 			content: [values.content],
 		})
-			.then(() => reset())
+			.then(() => {
+				reset();
+				textareaRef.current?.focus();
+			})
 			.catch((error) =>
 				toast.error(
 					error instanceof ConvexError
@@ -64,7 +101,19 @@ const ChatInput = () => {
 	};
 	return (
 		<div className="border-t w-full p-2 relative">
+			<div className="absolute bottom-16" ref={emojiPickerRef}>
+				<EmojiPicker
+					open={emojiPickerOpen}
+					theme={theme as Theme}
+					onEmojiClick={(emojiDetails) => {
+						insertEmoji(emojiDetails.emoji);
+						setEmojiPickerOpen(false);
+					}}
+					lazyLoadEmojis
+				/>
+			</div>
 			<div className="flex gap-2 itemd-end w-full">
+				<ActionsPopover setEmojiPickerOpen={setEmojiPickerOpen} />
 				<Form {...form}>
 					<form
 						onSubmit={handleSubmit(onSubmit)}
@@ -89,7 +138,7 @@ const ChatInput = () => {
 											}}
 											onChange={handleInputChange}
 											onClick={handleInputChange}
-											className="text-xs min-h-full w-full resize-none border-0 outline-0 bg-card text-card-foreground placeholder:text-muted-foreground p-1.5"
+											className="pt-3 text-xs min-h-full w-full resize-none border-0 outline-0 bg-card text-card-foreground placeholder:text-muted-foreground p-1.5"
 										/>
 									</FormControl>
 									<FormMessage />

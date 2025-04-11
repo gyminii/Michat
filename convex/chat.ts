@@ -225,9 +225,20 @@ export const markRead = mutation({
 		if (!membership) throw new ConvexError("You aren't a member of this Chat");
 
 		const lastMessage = await ctx.db.get(args.messageId);
+		const newLastSeen = lastMessage ? lastMessage._id : undefined;
 
-		await ctx.db.patch(membership._id, {
-			lastSeenMessage: lastMessage ? lastMessage._id : undefined,
-		});
+		if (membership.lastSeenMessage === newLastSeen) return;
+		try {
+			await ctx.db.replace(membership._id, {
+				...membership,
+				lastSeenMessage: newLastSeen,
+			});
+		} catch (err) {
+			console.log(err);
+			// Ignore conflict, likely due to another concurrent markRead
+		}
+		// await ctx.db.patch(membership._id, {
+		// 	lastSeenMessage: lastMessage ? lastMessage._id : undefined,
+		// });
 	},
 });
