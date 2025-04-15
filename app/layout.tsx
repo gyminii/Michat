@@ -10,6 +10,10 @@ import { ourFileRouter } from "./api/uploadthing/core";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 export const viewport: Viewport = {
 	themeColor: "DodgerBlue",
+	width: "device-width",
+	initialScale: 1,
+	maximumScale: 1,
+	userScalable: false,
 };
 const PoppinsFont = Poppins({
 	variable: "--font-poppins",
