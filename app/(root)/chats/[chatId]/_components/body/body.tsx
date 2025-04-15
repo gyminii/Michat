@@ -51,11 +51,11 @@ const Body = ({ members, callType, setCallType }: Props) => {
 		switch (names.length) {
 			case 1:
 				return (
-					<p className="text-muted-foreground text-sm text-right italic">{`Seen by ${names[0]}`}</p>
+					<p className="mt-1 text-muted-foreground text-[10px] text-right italic">{`Seen by ${names[0]}`}</p>
 				);
 			case 2:
 				return (
-					<p className="text-muted-foreground text-sm text-right italic">{`Seen by ${names[0]} and ${names[1]}`}</p>
+					<p className="mt-1 text-muted-foreground text-xs text-right italic">{`Seen by ${names[0]} and ${names[1]}`}</p>
 				);
 			default:
 				return (
@@ -92,7 +92,7 @@ const Body = ({ members, callType, setCallType }: Props) => {
 		return formatSeenBy(seenUsers);
 	};
 	return (
-		<div className="flex-1 w-full flex overflow-y-scroll flex-col-reverse gap-2 p-3 no-scrollbar h-full">
+		<div className="flex-1 w-full flex overflow-y-scroll flex-col-reverse gap-2 p-3 no-scrollbar h-dvh">
 			{!callType ? (
 				messages?.map(
 					({ message, senderImage, senderName, isCurrentUser }, index) => {

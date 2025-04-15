@@ -77,7 +77,7 @@ const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 		<Dialog open={chat && isMobile}>
 			<DialogContent
 				aria-describedby="chat-list-panel"
-				className="rounded-none [&>button]:hidden h-screen min-w-full p-0 flex flex-col"
+				className="rounded-none [&>button]:hidden h-dvh min-w-full p-0 flex flex-col"
 			>
 				<VisuallyHidden>
 					<Root>

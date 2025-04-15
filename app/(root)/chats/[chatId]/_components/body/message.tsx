@@ -27,7 +27,6 @@ const Message = ({
 	seen,
 }: Props) => {
 	const formatTime = (timestamp: number) => format(timestamp, "HH:mm");
-	console.log(type);
 	return (
 		<div
 			className={cn("flex items-end ", {
@@ -41,12 +40,15 @@ const Message = ({
 				})}
 			>
 				<div
-					className={cn("px-2 py-1 rounded-lg max-w-[70%] dark:text-white/80", {
-						"bg-primary text-primary-foreground": fromCurrentUser,
-						"bg-secondary text-secondary-foreground": !fromCurrentUser,
-						"rounded-br-none": !lastByUser && fromCurrentUser,
-						"rounded-bl-none": !lastByUser && !fromCurrentUser,
-					})}
+					className={cn(
+						"border-1 px-2 py-1 rounded-lg max-w-[70%] dark:text-white/80",
+						{
+							"bg-primary text-primary-foreground": fromCurrentUser,
+							"bg-secondary text-secondary-foreground": !fromCurrentUser,
+							"rounded-br-none": !lastByUser && fromCurrentUser,
+							"rounded-bl-none": !lastByUser && !fromCurrentUser,
+						}
+					)}
 				>
 					{type === "text" ? (
 						<p className="text-wrap break-words whitespace-pre-wrap break-all">
@@ -68,7 +70,7 @@ const Message = ({
 					) : null}
 					<p
 						className={cn(
-							`text-xs flex w-full my-1 italic dark:text-muted-foreground`,
+							"text-xs flex w-full my-1 italic dark:text-muted-foreground",
 							{
 								"text-primary-foreground justify-end": fromCurrentUser,
 								"text-secondary-foreground justify-start": !fromCurrentUser,
