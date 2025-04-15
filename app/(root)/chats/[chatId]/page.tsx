@@ -1,5 +1,5 @@
 "use client";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
@@ -13,6 +13,8 @@ import DeleteGroupDialog from "./_components/dialogs/delete-group-dialog";
 import LeaveGroupDialog from "./_components/dialogs/leave-group-dialog";
 import Header from "./_components/header";
 import ChatInput from "./_components/input/chat-input";
+import { VisuallyHidden, Root } from "@radix-ui/react-visually-hidden";
+
 const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 	const { chatId } = use(params);
 	const { isMobile } = useSidebar();
@@ -22,7 +24,7 @@ const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 	const [removeFriendDialogOpen, setRemoveFriendDialogOpen] = useState(false);
 	const [deleteGroupDialogOpen, setDeleteGroupDialogOpen] = useState(false);
 	const [leaveGroupDialogOpen, setLeaveGroupDialogOpen] = useState(false);
-	// const [callType, setCallType] = useState<"audio" | "video" | null>(null);
+	const [callType, setCallType] = useState<"audio" | "video" | null>(null);
 
 	const header = () => (
 		<Header
@@ -50,6 +52,7 @@ const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 							},
 						]
 			}
+			setCallType={setCallType}
 		/>
 	);
 	const chatBody = () => (
@@ -64,13 +67,23 @@ const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 							? [chat?.otherMember]
 							: []
 				}
+				callType={callType}
+				setCallType={setCallType}
 			/>
 			<ChatInput />
 		</>
 	);
 	return isMobile ? (
 		<Dialog open={chat && isMobile}>
-			<DialogContent className="rounded-none [&>button]:hidden h-screen min-w-full p-0 flex flex-col">
+			<DialogContent
+				aria-describedby="chat-list-panel"
+				className="rounded-none [&>button]:hidden h-screen min-w-full p-0 flex flex-col"
+			>
+				<VisuallyHidden>
+					<Root>
+						<DialogTitle></DialogTitle>
+					</Root>
+				</VisuallyHidden>
 				{header()}
 				<Separator orientation="horizontal" />
 				{chatBody()}

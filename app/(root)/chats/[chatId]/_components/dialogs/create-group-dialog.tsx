@@ -76,7 +76,6 @@ const CreateGroupDialog = () => {
 			: [];
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [members.length, friends?.length]);
-	console.log(unselectedFriends);
 	const handleSubmit = async (
 		values: z.infer<typeof createGroupFormSchema>
 	) => {

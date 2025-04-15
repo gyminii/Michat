@@ -1,7 +1,10 @@
-import React from "react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import React from "react";
+import FilePreview from "./file-preview";
+import ImagePreview from "./image-preview";
+import { Badge } from "@/components/ui/badge";
 type Props = {
 	fromCurrentUser: boolean;
 	senderImage: string;
@@ -24,6 +27,7 @@ const Message = ({
 	seen,
 }: Props) => {
 	const formatTime = (timestamp: number) => format(timestamp, "HH:mm");
+	console.log(type);
 	return (
 		<div
 			className={cn("flex items-end ", {
@@ -48,6 +52,19 @@ const Message = ({
 						<p className="text-wrap break-words whitespace-pre-wrap break-all">
 							{content}
 						</p>
+					) : null}
+					{type === "image" ? <ImagePreview urls={content} /> : null}
+					{type === "file" ? <FilePreview url={content[0]} /> : null}
+					{type === "call" ? (
+						<Badge
+							variant="default"
+							className={cn(
+								"bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100",
+								"font-medium"
+							)}
+						>
+							Joined Call
+						</Badge>
 					) : null}
 					<p
 						className={cn(
