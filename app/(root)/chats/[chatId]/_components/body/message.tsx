@@ -1,10 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import React from "react";
+import type React from "react";
 import FilePreview from "./file-preview";
 import ImagePreview from "./image-preview";
 import { Badge } from "@/components/ui/badge";
+
 type Props = {
 	fromCurrentUser: boolean;
 	senderImage: string;
@@ -27,31 +28,46 @@ const Message = ({
 	seen,
 }: Props) => {
 	const formatTime = (timestamp: number) => format(timestamp, "HH:mm");
+
 	return (
 		<div
-			className={cn("flex items-end ", {
+			className={cn("flex items-end gap-2 group transition-all", {
 				"justify-end": fromCurrentUser,
 			})}
 		>
+			<Avatar
+				className={cn("relative w-8 h-8 shrink-0 transition-opacity", {
+					"order-2": fromCurrentUser,
+					"order-1": !fromCurrentUser,
+					"opacity-0 group-hover:opacity-100": lastByUser,
+				})}
+			>
+				<AvatarImage src={senderImage || "/placeholder.svg"} />
+				<AvatarFallback>{senderName.substring(0, 1)}</AvatarFallback>
+			</Avatar>
+
 			<div
-				className={cn("flex flex-col w-full mx-2", {
+				className={cn("flex flex-col max-w-[75%]", {
 					"order-1 items-end": fromCurrentUser,
 					"order-2 items-start": !fromCurrentUser,
 				})}
 			>
+				{!lastByUser && !fromCurrentUser && (
+					<span className="text-xs text-muted-foreground ml-1 mb-1">
+						{senderName}
+					</span>
+				)}
+
 				<div
-					className={cn(
-						"border-1 px-2 py-1 rounded-lg max-w-[70%] dark:text-white/80",
-						{
-							"bg-primary text-primary-foreground": fromCurrentUser,
-							"bg-secondary text-secondary-foreground": !fromCurrentUser,
-							"rounded-br-none": !lastByUser && fromCurrentUser,
-							"rounded-bl-none": !lastByUser && !fromCurrentUser,
-						}
-					)}
+					className={cn("px-4 py-2 rounded-2xl shadow-sm transition-all", {
+						"bg-primary text-primary-foreground": fromCurrentUser,
+						"bg-secondary text-secondary-foreground": !fromCurrentUser,
+						"rounded-br-md": !lastByUser && fromCurrentUser,
+						"rounded-bl-md": !lastByUser && !fromCurrentUser,
+					})}
 				>
 					{type === "text" ? (
-						<p className="text-wrap break-words whitespace-pre-wrap break-all">
+						<p className="text-wrap break-words whitespace-pre-wrap">
 							{content}
 						</p>
 					) : null}
@@ -69,30 +85,16 @@ const Message = ({
 						</Badge>
 					) : null}
 					<p
-						className={cn(
-							"text-xs flex w-full my-1 italic dark:text-muted-foreground",
-							{
-								"text-primary-foreground justify-end": fromCurrentUser,
-								"text-secondary-foreground justify-start": !fromCurrentUser,
-							}
-						)}
+						className={cn("text-xs flex w-full mt-1 italic opacity-70", {
+							"justify-end": fromCurrentUser,
+							"justify-start": !fromCurrentUser,
+						})}
 					>
 						{formatTime(createdAt)}
 					</p>
 				</div>
-				{seen}
+				{seen && <div className="mt-1">{seen}</div>}
 			</div>
-
-			<Avatar
-				className={cn("relative w-8 h-8", {
-					"order-2": fromCurrentUser,
-					"order-1": !fromCurrentUser,
-					invisible: lastByUser,
-				})}
-			>
-				<AvatarImage src={senderImage} />
-				<AvatarFallback>{senderName.substring(0, 1)}</AvatarFallback>
-			</Avatar>
 		</div>
 	);
 };

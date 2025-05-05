@@ -6,12 +6,12 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import type { Id } from "@/convex/_generated/dataModel";
 import { useChat } from "@/hooks/use-chat";
 import { useMutationState } from "@/hooks/use-mutation-state";
 import { TooltipContent } from "@radix-ui/react-tooltip";
 import { useQuery } from "convex/react";
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useRef } from "react";
 import CallRoom from "./call-room";
 import Message from "./message";
 type Props = {
@@ -32,6 +32,7 @@ const Body = ({ members, callType, setCallType }: Props) => {
 
 	const { mutate: markRead } = useMutationState(api.chat.markRead);
 	const lastMarkedIdRef = useRef<string | null>(null);
+	const messagesEndRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		if (!messages || messages.length === 0) return;
@@ -46,6 +47,11 @@ const Body = ({ members, callType, setCallType }: Props) => {
 			lastMarkedIdRef.current = first.message._id;
 		}
 	}, [messages, chatId, markRead]);
+
+	// Scroll to bottom when new messages arrive
+	useEffect(() => {
+		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	}, [messages]);
 
 	const formatSeenBy = (names: string[]) => {
 		switch (names.length) {
@@ -91,37 +97,41 @@ const Body = ({ members, callType, setCallType }: Props) => {
 
 		return formatSeenBy(seenUsers);
 	};
+
 	return (
-		<div className="flex-1 w-full flex overflow-y-scroll flex-col-reverse gap-2 p-3 no-scrollbar h-dvh">
-			{!callType ? (
-				messages?.map(
-					({ message, senderImage, senderName, isCurrentUser }, index) => {
-						const lastByUser =
-							messages[index - 1]?.message.senderId ===
-							messages[index].message.senderId;
-						const seenMessage = getSeenMessage(message._id, message.senderId);
-						return (
-							<Message
-								key={message._id}
-								fromCurrentUser={isCurrentUser}
-								senderImage={senderImage}
-								senderName={senderName}
-								lastByUser={lastByUser}
-								content={message.content}
-								createdAt={message._creationTime}
-								type={message.type}
-								seen={seenMessage}
-							/>
-						);
-					}
-				)
-			) : (
-				<CallRoom
-					audio={callType === "audio" || callType === "video"}
-					video={callType === "video"}
-					handleDisconnect={() => setCallType(null)}
-				/>
-			)}
+		<div className="h-full w-full overflow-y-auto p-4 pb-2">
+			<div className="flex flex-col-reverse gap-4 min-h-full">
+				<div ref={messagesEndRef} />
+				{!callType ? (
+					messages?.map(
+						({ message, senderImage, senderName, isCurrentUser }, index) => {
+							const lastByUser =
+								messages[index - 1]?.message.senderId ===
+								messages[index].message.senderId;
+							const seenMessage = getSeenMessage(message._id, message.senderId);
+							return (
+								<Message
+									key={message._id}
+									fromCurrentUser={isCurrentUser}
+									senderImage={senderImage}
+									senderName={senderName}
+									lastByUser={lastByUser}
+									content={message.content}
+									createdAt={message._creationTime}
+									type={message.type}
+									seen={seenMessage}
+								/>
+							);
+						}
+					)
+				) : (
+					<CallRoom
+						audio={callType === "audio" || callType === "video"}
+						video={callType === "video"}
+						handleDisconnect={() => setCallType(null)}
+					/>
+				)}
+			</div>
 		</div>
 	);
 };

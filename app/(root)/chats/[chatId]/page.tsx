@@ -1,10 +1,6 @@
 "use client";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { Separator } from "@/components/ui/separator";
-import { useSidebar } from "@/components/ui/sidebar";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import type { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { use, useState } from "react";
 import RemoveFriendDialog from "../../friends/_components/remove-friend-dialog";
@@ -13,11 +9,9 @@ import DeleteGroupDialog from "./_components/dialogs/delete-group-dialog";
 import LeaveGroupDialog from "./_components/dialogs/leave-group-dialog";
 import Header from "./_components/header";
 import ChatInput from "./_components/input/chat-input";
-import { VisuallyHidden, Root } from "@radix-ui/react-visually-hidden";
 
 const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 	const { chatId } = use(params);
-	const { isMobile } = useSidebar();
 	const chat = useQuery(api.chat.get, {
 		id: chatId,
 	});
@@ -55,46 +49,9 @@ const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 			setCallType={setCallType}
 		/>
 	);
-	const chatBody = () => (
+
+	return (
 		<>
-			<Body
-				members={
-					chat?.isGroup
-						? chat?.otherMembers
-							? chat?.otherMembers
-							: []
-						: chat?.otherMember
-							? [chat?.otherMember]
-							: []
-				}
-				callType={callType}
-				setCallType={setCallType}
-			/>
-			<ChatInput />
-		</>
-	);
-	return isMobile ? (
-		<Dialog open={chat && isMobile}>
-			<DialogContent
-				aria-describedby="chat-list-panel"
-				className="rounded-none [&>button]:hidden h-dvh min-w-full p-0 flex flex-col"
-			>
-				<VisuallyHidden>
-					<Root>
-						<DialogTitle></DialogTitle>
-					</Root>
-				</VisuallyHidden>
-				{header()}
-				<Separator orientation="horizontal" />
-				{chatBody()}
-			</DialogContent>
-		</Dialog>
-	) : (
-		<ResizablePanel
-			defaultSize={80}
-			className="hidden md:block"
-			id="chat-list-panel"
-		>
 			<RemoveFriendDialog
 				chatId={chatId}
 				open={removeFriendDialogOpen}
@@ -110,15 +67,31 @@ const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 				open={leaveGroupDialogOpen}
 				setOpen={setLeaveGroupDialogOpen}
 			/>
-			<ResizablePanelGroup direction="vertical" className="flex-0">
-				<ResizablePanel className="p-0" id="header-panel">
+
+			<div className="flex flex-col h-full w-full">
+				<div className="flex-shrink-0 z-10 bg-background sticky top-0">
 					{header()}
-				</ResizablePanel>
-				<ResizablePanel defaultSize={90} className="flex flex-col">
-					{chatBody()}
-				</ResizablePanel>
-			</ResizablePanelGroup>
-		</ResizablePanel>
+				</div>
+				<div className="flex-1 overflow-hidden min-h-0 relative">
+					<Body
+						members={
+							chat?.isGroup
+								? chat?.otherMembers
+									? chat?.otherMembers
+									: []
+								: chat?.otherMember
+									? [chat?.otherMember]
+									: []
+						}
+						callType={callType}
+						setCallType={setCallType}
+					/>
+				</div>
+				<div className="flex-shrink-0 z-10 bg-background sticky bottom-0">
+					<ChatInput />
+				</div>
+			</div>
+		</>
 	);
 };
 

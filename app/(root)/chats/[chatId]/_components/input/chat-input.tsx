@@ -1,3 +1,7 @@
+"use client";
+
+import type React from "react";
+
 import { Button } from "@/components/ui/button";
 import {
 	Form,
@@ -19,10 +23,12 @@ import { z } from "zod";
 import ActionsPopover from "./actions-popover";
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
-import EmojiPicker, { Theme } from "emoji-picker-react";
+import EmojiPicker, { type Theme } from "emoji-picker-react";
+
 const MessageSchema = z.object({
 	content: z.string().min(1, { message: "This field can't be empty" }),
 });
+
 const ChatInput = () => {
 	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 	const emojiPickerRef = useRef<HTMLDivElement | null>(null);
@@ -33,12 +39,14 @@ const ChatInput = () => {
 	const { mutate: createMessage, pending: createPending } = useMutationState(
 		api.message.create
 	);
+
 	const form = useForm<z.infer<typeof MessageSchema>>({
 		resolver: zodResolver(MessageSchema),
 		defaultValues: {
 			content: "",
 		},
 	});
+
 	const { reset, handleSubmit, control, watch, setValue } = form;
 
 	const handleInputChange = (
@@ -52,6 +60,7 @@ const ChatInput = () => {
 			setCursorPosition(selectionStart);
 		}
 	};
+
 	// Emoji Picker-----------------------------------------------------
 	const content = watch("content", "");
 
@@ -81,6 +90,7 @@ const ChatInput = () => {
 		setCursorPosition(cursorPosition + emoji.length);
 	};
 	// -----------------------------------------------------------------
+
 	const onSubmit = async (values: z.infer<typeof MessageSchema>) => {
 		createMessage({
 			chatId,
@@ -99,20 +109,24 @@ const ChatInput = () => {
 				)
 			);
 	};
+
 	return (
-		<div className="border-t w-full p-2 relative">
-			<div className="absolute bottom-16" ref={emojiPickerRef}>
-				<EmojiPicker
-					open={emojiPickerOpen}
-					theme={theme as Theme}
-					onEmojiClick={(emojiDetails) => {
-						insertEmoji(emojiDetails.emoji);
-						setEmojiPickerOpen(false);
-					}}
-					lazyLoadEmojis
-				/>
+		<div className="border-t w-full p-3 bg-background relative">
+			<div className="absolute bottom-16 right-3 z-50" ref={emojiPickerRef}>
+				{emojiPickerOpen && (
+					<EmojiPicker
+						theme={theme as Theme}
+						onEmojiClick={(emojiDetails) => {
+							insertEmoji(emojiDetails.emoji);
+							setEmojiPickerOpen(false);
+						}}
+						lazyLoadEmojis
+						height={350}
+						width={300}
+					/>
+				)}
 			</div>
-			<div className="flex gap-2 itemd-end w-full">
+			<div className="flex gap-2 items-end w-full">
 				<ActionsPopover setEmojiPickerOpen={setEmojiPickerOpen} />
 				<Form {...form}>
 					<form
@@ -127,6 +141,7 @@ const ChatInput = () => {
 									<FormControl>
 										<TextareaAutosize
 											{...field}
+											ref={textareaRef}
 											placeholder="Type a message..."
 											rows={1}
 											maxRows={3}
@@ -138,7 +153,7 @@ const ChatInput = () => {
 											}}
 											onChange={handleInputChange}
 											onClick={handleInputChange}
-											className="pt-3 text-xs min-h-full w-full resize-none border-0 outline-0 bg-card text-card-foreground placeholder:text-muted-foreground p-1.5"
+											className="pt-2 text-sm min-h-full w-full resize-none border rounded-lg outline-0 bg-card text-card-foreground placeholder:text-muted-foreground p-3 focus:ring-2 focus:ring-primary/20 transition-all"
 										/>
 									</FormControl>
 									<FormMessage />
@@ -149,9 +164,9 @@ const ChatInput = () => {
 							disabled={createPending}
 							size="icon"
 							type="submit"
-							className="dark:text-white"
+							className="h-10 w-10 rounded-full bg-primary hover:bg-primary/90 transition-all"
 						>
-							<SendHorizonal />
+							<SendHorizonal className="h-5 w-5 text-primary-foreground" />
 						</Button>
 					</form>
 				</Form>

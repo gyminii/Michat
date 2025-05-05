@@ -12,7 +12,7 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
-import React from "react";
+import type React from "react";
 
 type Props = {
 	children: React.ReactNode;
@@ -21,28 +21,28 @@ type Props = {
 const layout = ({ children }: Props) => {
 	return (
 		<SidebarProvider defaultOpen={false}>
-			<AppSidebar />
-			<SidebarInset>
-				<header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-					<div className="flex items-center gap-2 px-4">
-						<SidebarTrigger className="-ml-1" />
-						<Separator orientation="vertical" className="mr-2 h-4" />
-						<Breadcrumb>
-							<BreadcrumbList>
-								<BreadcrumbItem className="hidden md:block">
-									<BreadcrumbLink href="#">Michat</BreadcrumbLink>
-								</BreadcrumbItem>
-								{/* <BreadcrumbSeparator className="hidden md:block" />
-								<BreadcrumbItem>
-									<BreadcrumbPage>Data Fetching</BreadcrumbPage>
-								</BreadcrumbItem> */}
-							</BreadcrumbList>
-						</Breadcrumb>
-					</div>
-				</header>
+			<div className="flex h-screen w-full overflow-hidden">
+				<AppSidebar />
+				<SidebarInset className="flex flex-col h-screen w-full">
+					<header className="flex h-14 shrink-0 items-center gap-2 border-b bg-background z-10">
+						<div className="flex items-center gap-2 px-4">
+							<SidebarTrigger className="-ml-1" />
+							<Separator orientation="vertical" className="mr-2 h-4" />
+							<Breadcrumb>
+								<BreadcrumbList>
+									<BreadcrumbItem className="hidden md:block">
+										<BreadcrumbLink href="#">Michat</BreadcrumbLink>
+									</BreadcrumbItem>
+								</BreadcrumbList>
+							</Breadcrumb>
+						</div>
+					</header>
 
-				<SidebarWrapper>{children}</SidebarWrapper>
-			</SidebarInset>
+					<div className="flex-1 overflow-hidden">
+						<SidebarWrapper>{children}</SidebarWrapper>
+					</div>
+				</SidebarInset>
+			</div>
 		</SidebarProvider>
 	);
 };
