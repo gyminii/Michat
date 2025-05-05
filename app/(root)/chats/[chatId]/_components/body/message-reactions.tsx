@@ -7,13 +7,13 @@ import { cn } from "@/lib/utils";
 type Reaction = "👍" | "❤️" | "😂" | "😮" | "😢" | "🔥";
 
 type Props = {
-	messageId: string;
+	messageId?: string;
 	fromCurrentUser: boolean;
 };
 
 const reactions: Reaction[] = ["👍", "❤️", "😂", "😮", "😢", "🔥"];
 
-const MessageReactions = ({ messageId, fromCurrentUser }: Props) => {
+const MessageReactions = ({ fromCurrentUser }: Props) => {
 	const [selectedReaction, setSelectedReaction] = useState<Reaction | null>(
 		null
 	);

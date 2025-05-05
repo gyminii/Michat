@@ -26,13 +26,7 @@ type Props = {
 	isGroup?: boolean;
 };
 
-const AnimatedHeader = ({
-	imageUrl,
-	name,
-	options,
-	setCallType,
-	isGroup,
-}: Props) => {
+const AnimatedHeader = ({ imageUrl, name, options, setCallType }: Props) => {
 	const router = useRouter();
 
 	const handleBackClick = () => {
@@ -77,14 +71,14 @@ const AnimatedHeader = ({
 					>
 						{name}
 					</motion.h2>
-					<motion.span
+					{/* <motion.span
 						className="text-xs text-muted-foreground"
 						initial={{ opacity: 0, x: -10 }}
 						animate={{ opacity: 1, x: 0 }}
 						transition={{ delay: 0.2 }}
 					>
-						{isGroup ? "Group" : "Online"}
-					</motion.span>
+						{isGroup && "Group"}
+					</motion.span> */}
 				</div>
 			</div>
 			<div className="flex gap-2">

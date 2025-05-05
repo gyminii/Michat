@@ -8,7 +8,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useChat } from "@/hooks/use-chat";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, Phone, Settings, Video } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -27,7 +26,6 @@ type Props = {
 
 const Header = ({ imageUrl, name, options, setCallType }: Props) => {
 	const router = useRouter();
-	const { chatId, chat } = useChat();
 
 	const handleBackClick = () => {
 		router.push("/chats");
@@ -50,10 +48,8 @@ const Header = ({ imageUrl, name, options, setCallType }: Props) => {
 				</Avatar>
 				<div className="flex flex-col">
 					<h2 className="font-semibold text-base">{name}</h2>
-					<span className="text-xs text-muted-foreground">
-						{/* You could add online status here */}
-						{chat?.isGroup ? "Group" : "Online"}
-					</span>
+					{/* <span className="text-xs text-muted-foreground">
+					</span> */}
 				</div>
 			</div>
 			<div className="flex gap-2">

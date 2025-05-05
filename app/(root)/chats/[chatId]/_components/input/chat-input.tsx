@@ -9,17 +9,16 @@ import { useChat } from "@/hooks/use-chat";
 import { useMutationState } from "@/hooks/use-mutation-state";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ConvexError } from "convex/values";
+import { motion } from "framer-motion";
 import { Smile } from "lucide-react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import TextareaAutosize from "react-textarea-autosize";
 import { toast } from "sonner";
 import { z } from "zod";
 import ActionsPopover from "./actions-popover";
-import { useRef, useState } from "react";
-import { useTheme } from "next-themes";
-import { motion } from "framer-motion";
-import AnimatedEmojiPicker from "./emoji-picker-animated";
 import AnimatedButton from "./animated-button";
+import AnimatedEmojiPicker from "./emoji-picker-animated";
 
 const MessageSchema = z.object({
 	content: z.string().min(1, { message: "This field can't be empty" }),
@@ -29,7 +28,6 @@ const ChatInput = () => {
 	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 	const [cursorPosition, setCursorPosition] = useState(0);
 	const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
-	const { theme } = useTheme();
 	const { chatId } = useChat();
 	const { mutate: createMessage, pending: createPending } = useMutationState(
 		api.message.create

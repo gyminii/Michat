@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import {
 	Tooltip,
 	TooltipProvider,
@@ -13,6 +11,7 @@ import { useChat } from "@/hooks/use-chat";
 import { useMutationState } from "@/hooks/use-mutation-state";
 import { TooltipContent } from "@radix-ui/react-tooltip";
 import { useQuery } from "convex/react";
+import { motion } from "framer-motion";
 import {
 	type Dispatch,
 	type SetStateAction,
@@ -20,11 +19,8 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { useInView } from "react-intersection-observer";
-import { motion, AnimatePresence } from "framer-motion";
-import CallRoom from "./call-room";
 import AnimatedMessage from "./animated-messages";
-import TypingIndicator from "./typing-indicator";
+import CallRoom from "./call-room";
 
 type Props = {
 	members: {
@@ -42,15 +38,15 @@ const Body = ({ members, callType, setCallType }: Props) => {
 	const messages = useQuery(api.messages.get, {
 		id: chatId as Id<"chats">,
 	});
-	const [isTyping, setIsTyping] = useState(false);
+	// const [isTyping, setIsTyping] = useState(false);
 	const [newMessageIds, setNewMessageIds] = useState<string[]>([]);
 
 	const { mutate: markRead } = useMutationState(api.chat.markRead);
 	const lastMarkedIdRef = useRef<string | null>(null);
-	const messagesEndRef = useRef<HTMLDivElement>(null);
-	const { ref: scrollRef, inView } = useInView({
-		threshold: 0.5,
-	});
+	// const messagesEndRef = useRef<HTMLDivElement>(null);
+	// const { ref: scrollRef, inView } = useInView({
+	// 	threshold: 0.5,
+	// });
 
 	// // Simulate typing indicator
 	// useEffect(() => {
@@ -99,18 +95,18 @@ const Body = ({ members, callType, setCallType }: Props) => {
 	}, [messages, chatId, markRead]);
 
 	// Track if user has manually scrolled up
-	const [userHasScrolledUp, setUserHasScrolledUp] = useState(false);
+	// const [userHasScrolledUp, setUserHasScrolledUp] = useState(false);
 
-	// Scroll to bottom when new messages arrive, but only if user hasn't scrolled up
-	useEffect(() => {
-		const shouldAutoScroll =
-			!userHasScrolledUp ||
-			(messages && messages.length > 0 && messages[0].isCurrentUser);
+	// // Scroll to bottom when new messages arrive, but only if user hasn't scrolled up
+	// useEffect(() => {
+	// 	const shouldAutoScroll =
+	// 		!userHasScrolledUp ||
+	// 		(messages && messages.length > 0 && messages[0].isCurrentUser);
 
-		if (shouldAutoScroll) {
-			messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-		}
-	}, [messages, userHasScrolledUp]);
+	// 	if (shouldAutoScroll) {
+	// 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	// 	}
+	// }, [messages, userHasScrolledUp]);
 
 	const formatSeenBy = (names: string[]) => {
 		switch (names.length) {
@@ -160,7 +156,7 @@ const Body = ({ members, callType, setCallType }: Props) => {
 	return (
 		<div className="h-full w-full overflow-y-auto p-4 pb-2">
 			<div className="flex flex-col-reverse gap-4 min-h-full">
-				<div ref={messagesEndRef} />
+				{/* <div ref={messagesEndRef} />
 
 				<AnimatePresence>
 					{isTyping && !callType && (
@@ -172,7 +168,7 @@ const Body = ({ members, callType, setCallType }: Props) => {
 							<TypingIndicator />
 						</motion.div>
 					)}
-				</AnimatePresence>
+				</AnimatePresence> */}
 
 				{!callType ? (
 					<motion.div layout className="flex flex-col-reverse gap-4">
@@ -190,10 +186,7 @@ const Body = ({ members, callType, setCallType }: Props) => {
 									newMessageIds.length > 0;
 
 								return (
-									<div
-										ref={index === 0 ? scrollRef : undefined}
-										key={message._id}
-									>
+									<div key={message._id}>
 										<AnimatedMessage
 											key={message._id}
 											fromCurrentUser={isCurrentUser}

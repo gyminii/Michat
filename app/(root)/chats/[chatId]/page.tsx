@@ -2,15 +2,14 @@
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
+import { motion } from "framer-motion";
 import { use, useState } from "react";
 import RemoveFriendDialog from "../../friends/_components/remove-friend-dialog";
+import AnimatedHeader from "./_components/animated-header";
 import Body from "./_components/body/body";
 import DeleteGroupDialog from "./_components/dialogs/delete-group-dialog";
 import LeaveGroupDialog from "./_components/dialogs/leave-group-dialog";
-import AnimatedHeader from "./_components/animated-header";
 import ChatInput from "./_components/input/chat-input";
-import { Confetti } from "@/components/ui/confetti";
-import { motion } from "framer-motion";
 
 const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 	const { chatId } = use(params);
@@ -21,7 +20,6 @@ const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 	const [deleteGroupDialogOpen, setDeleteGroupDialogOpen] = useState(false);
 	const [leaveGroupDialogOpen, setLeaveGroupDialogOpen] = useState(false);
 	const [callType, setCallType] = useState<"audio" | "video" | null>(null);
-	const [showConfetti, setShowConfetti] = useState(true);
 
 	const header = () => (
 		<AnimatedHeader
