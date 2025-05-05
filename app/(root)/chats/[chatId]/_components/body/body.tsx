@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 import {
 	Tooltip,
 	TooltipProvider,
@@ -11,9 +13,19 @@ import { useChat } from "@/hooks/use-chat";
 import { useMutationState } from "@/hooks/use-mutation-state";
 import { TooltipContent } from "@radix-ui/react-tooltip";
 import { useQuery } from "convex/react";
-import { type Dispatch, type SetStateAction, useEffect, useRef } from "react";
+import {
+	type Dispatch,
+	type SetStateAction,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
+import { useInView } from "react-intersection-observer";
+import { motion, AnimatePresence } from "framer-motion";
 import CallRoom from "./call-room";
-import Message from "./message";
+import AnimatedMessage from "./animated-messages";
+import TypingIndicator from "./typing-indicator";
+
 type Props = {
 	members: {
 		_id?: Id<"users">;
@@ -24,15 +36,53 @@ type Props = {
 	callType: "audio" | "video" | null;
 	setCallType: Dispatch<SetStateAction<"audio" | "video" | null>>;
 };
+
 const Body = ({ members, callType, setCallType }: Props) => {
 	const { chatId } = useChat();
 	const messages = useQuery(api.messages.get, {
 		id: chatId as Id<"chats">,
 	});
+	const [isTyping, setIsTyping] = useState(false);
+	const [newMessageIds, setNewMessageIds] = useState<string[]>([]);
 
 	const { mutate: markRead } = useMutationState(api.chat.markRead);
 	const lastMarkedIdRef = useRef<string | null>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
+	const { ref: scrollRef, inView } = useInView({
+		threshold: 0.5,
+	});
+
+	// // Simulate typing indicator
+	// useEffect(() => {
+	// 	if (messages && messages.length > 0) {
+	// 		const randomTimeout = Math.floor(Math.random() * 3000) + 1000;
+	// 		const typingTimeout = setTimeout(() => {
+	// 			setIsTyping(true);
+
+	// 			// Hide typing indicator after a few seconds
+	// 			setTimeout(() => {
+	// 				setIsTyping(false);
+	// 			}, 3000);
+	// 		}, randomTimeout);
+
+	// 		return () => clearTimeout(typingTimeout);
+	// 	}
+	// }, [messages]);
+
+	// Track new messages
+	useEffect(() => {
+		if (!messages || messages.length === 0) return;
+
+		const currentIds = messages.map((m) => m.message._id);
+		const prevIds = newMessageIds;
+
+		// Find messages that weren't in the previous render
+		const newIds = currentIds.filter((id) => !prevIds.includes(id));
+
+		if (newIds.length > 0) {
+			setNewMessageIds(currentIds);
+		}
+	}, [messages, newMessageIds]);
 
 	useEffect(() => {
 		if (!messages || messages.length === 0) return;
@@ -48,10 +98,19 @@ const Body = ({ members, callType, setCallType }: Props) => {
 		}
 	}, [messages, chatId, markRead]);
 
-	// Scroll to bottom when new messages arrive
+	// Track if user has manually scrolled up
+	const [userHasScrolledUp, setUserHasScrolledUp] = useState(false);
+
+	// Scroll to bottom when new messages arrive, but only if user hasn't scrolled up
 	useEffect(() => {
-		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-	}, [messages]);
+		const shouldAutoScroll =
+			!userHasScrolledUp ||
+			(messages && messages.length > 0 && messages[0].isCurrentUser);
+
+		if (shouldAutoScroll) {
+			messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+		}
+	}, [messages, userHasScrolledUp]);
 
 	const formatSeenBy = (names: string[]) => {
 		switch (names.length) {
@@ -102,28 +161,57 @@ const Body = ({ members, callType, setCallType }: Props) => {
 		<div className="h-full w-full overflow-y-auto p-4 pb-2">
 			<div className="flex flex-col-reverse gap-4 min-h-full">
 				<div ref={messagesEndRef} />
+
+				<AnimatePresence>
+					{isTyping && !callType && (
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: -20 }}
+						>
+							<TypingIndicator />
+						</motion.div>
+					)}
+				</AnimatePresence>
+
 				{!callType ? (
-					messages?.map(
-						({ message, senderImage, senderName, isCurrentUser }, index) => {
-							const lastByUser =
-								messages[index - 1]?.message.senderId ===
-								messages[index].message.senderId;
-							const seenMessage = getSeenMessage(message._id, message.senderId);
-							return (
-								<Message
-									key={message._id}
-									fromCurrentUser={isCurrentUser}
-									senderImage={senderImage}
-									senderName={senderName}
-									lastByUser={lastByUser}
-									content={message.content}
-									createdAt={message._creationTime}
-									type={message.type}
-									seen={seenMessage}
-								/>
-							);
-						}
-					)
+					<motion.div layout className="flex flex-col-reverse gap-4">
+						{messages?.map(
+							({ message, senderImage, senderName, isCurrentUser }, index) => {
+								const lastByUser =
+									messages[index - 1]?.message.senderId ===
+									messages[index].message.senderId;
+								const seenMessage = getSeenMessage(
+									message._id,
+									message.senderId
+								);
+								const isNewMessage =
+									newMessageIds.includes(message._id) &&
+									newMessageIds.length > 0;
+
+								return (
+									<div
+										ref={index === 0 ? scrollRef : undefined}
+										key={message._id}
+									>
+										<AnimatedMessage
+											key={message._id}
+											fromCurrentUser={isCurrentUser}
+											senderImage={senderImage}
+											senderName={senderName}
+											lastByUser={lastByUser}
+											content={message.content}
+											createdAt={message._creationTime}
+											type={message.type}
+											seen={seenMessage}
+											isNew={isNewMessage}
+											messageId={message._id}
+										/>
+									</div>
+								);
+							}
+						)}
+					</motion.div>
 				) : (
 					<CallRoom
 						audio={callType === "audio" || callType === "video"}

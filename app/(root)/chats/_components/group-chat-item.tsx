@@ -12,7 +12,7 @@ type Props = {
 	unseenCount: number;
 };
 
-const GroupChatItem = ({
+export const GroupChatItem = ({
 	id,
 	name,
 	lastMessageContent,

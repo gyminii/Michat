@@ -13,7 +13,7 @@ type Props = {
 	unseenCount: number;
 };
 
-const DMChatItem = ({
+export const DMChatItem = ({
 	id,
 	imageUrl,
 	username,

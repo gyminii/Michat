@@ -3,27 +3,23 @@
 import type React from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { api } from "@/convex/_generated/api";
 import { useChat } from "@/hooks/use-chat";
 import { useMutationState } from "@/hooks/use-mutation-state";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ConvexError } from "convex/values";
-import { SendHorizonal } from "lucide-react";
+import { Smile } from "lucide-react";
 import { useForm } from "react-hook-form";
 import TextareaAutosize from "react-textarea-autosize";
 import { toast } from "sonner";
 import { z } from "zod";
 import ActionsPopover from "./actions-popover";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useTheme } from "next-themes";
-import EmojiPicker, { type Theme } from "emoji-picker-react";
+import { motion } from "framer-motion";
+import AnimatedEmojiPicker from "./emoji-picker-animated";
+import AnimatedButton from "./animated-button";
 
 const MessageSchema = z.object({
 	content: z.string().min(1, { message: "This field can't be empty" }),
@@ -31,7 +27,6 @@ const MessageSchema = z.object({
 
 const ChatInput = () => {
 	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-	const emojiPickerRef = useRef<HTMLDivElement | null>(null);
 	const [cursorPosition, setCursorPosition] = useState(0);
 	const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
 	const { theme } = useTheme();
@@ -49,6 +44,10 @@ const ChatInput = () => {
 
 	const { reset, handleSubmit, control, watch, setValue } = form;
 
+	// Watch content to determine if input is empty
+	const content = watch("content", "");
+	const isEmpty = content.trim().length === 0;
+
 	const handleInputChange = (
 		event:
 			| React.ChangeEvent<HTMLTextAreaElement>
@@ -61,37 +60,20 @@ const ChatInput = () => {
 		}
 	};
 
-	// Emoji Picker-----------------------------------------------------
-	const content = watch("content", "");
-
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				emojiPickerRef.current &&
-				!emojiPickerRef.current.contains(event.target as Node)
-			) {
-				setEmojiPickerOpen(false);
-			}
-		};
-
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => document.removeEventListener("mousedown", handleClickOutside);
-	}, []);
-
+	// Emoji Picker insertion
 	const insertEmoji = (emoji: string) => {
 		const newText = [
 			content.substring(0, cursorPosition),
 			emoji,
 			content.substring(cursorPosition),
 		].join("");
-
 		setValue("content", newText);
-
 		setCursorPosition(cursorPosition + emoji.length);
 	};
-	// -----------------------------------------------------------------
 
 	const onSubmit = async (values: z.infer<typeof MessageSchema>) => {
+		if (isEmpty) return;
+
 		createMessage({
 			chatId,
 			type: "text",
@@ -112,26 +94,21 @@ const ChatInput = () => {
 
 	return (
 		<div className="border-t w-full p-3 bg-background relative">
-			<div className="absolute bottom-16 right-3 z-50" ref={emojiPickerRef}>
-				{emojiPickerOpen && (
-					<EmojiPicker
-						theme={theme as Theme}
-						onEmojiClick={(emojiDetails) => {
-							insertEmoji(emojiDetails.emoji);
-							setEmojiPickerOpen(false);
-						}}
-						lazyLoadEmojis
-						height={350}
-						width={300}
-					/>
-				)}
-			</div>
-			<div className="flex gap-2 items-end w-full">
-				<ActionsPopover setEmojiPickerOpen={setEmojiPickerOpen} />
+			<AnimatedEmojiPicker
+				isOpen={emojiPickerOpen}
+				onClose={() => setEmojiPickerOpen(false)}
+				onEmojiSelect={insertEmoji}
+			/>
+
+			<div className="flex gap-2 items-center w-full">
+				<motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+					<ActionsPopover setEmojiPickerOpen={setEmojiPickerOpen} />
+				</motion.div>
+
 				<Form {...form}>
 					<form
 						onSubmit={handleSubmit(onSubmit)}
-						className="flex gap-2 items-end w-full"
+						className="flex gap-2 items-center w-full"
 					>
 						<FormField
 							control={control}
@@ -139,35 +116,47 @@ const ChatInput = () => {
 							render={({ field }) => (
 								<FormItem className="h-full w-full">
 									<FormControl>
-										<TextareaAutosize
-											{...field}
-											ref={textareaRef}
-											placeholder="Type a message..."
-											rows={1}
-											maxRows={3}
-											onKeyDown={async (e) => {
-												if (e.key === "Enter" && !e.shiftKey) {
-													e.preventDefault();
-													await handleSubmit(onSubmit)();
-												}
-											}}
-											onChange={handleInputChange}
-											onClick={handleInputChange}
-											className="pt-2 text-sm min-h-full w-full resize-none border rounded-lg outline-0 bg-card text-card-foreground placeholder:text-muted-foreground p-3 focus:ring-2 focus:ring-primary/20 transition-all"
-										/>
+										<motion.div whileFocus={{ scale: 1.01 }} className="w-full">
+											<TextareaAutosize
+												{...field}
+												ref={textareaRef}
+												placeholder="Type a message..."
+												rows={1}
+												maxRows={3}
+												onKeyDown={async (e) => {
+													if (e.key === "Enter" && !e.shiftKey) {
+														e.preventDefault();
+														if (!isEmpty) {
+															await handleSubmit(onSubmit)();
+														}
+													}
+												}}
+												onChange={handleInputChange}
+												onClick={handleInputChange}
+												className="text-sm min-h-full w-full resize-none border rounded-lg outline-0 bg-card text-card-foreground placeholder:text-muted-foreground p-3 focus:ring-2 focus:ring-primary/20 transition-all"
+											/>
+										</motion.div>
 									</FormControl>
-									<FormMessage />
+									{/* Error message removed */}
 								</FormItem>
 							)}
 						/>
-						<Button
-							disabled={createPending}
-							size="icon"
-							type="submit"
-							className="h-10 w-10 rounded-full bg-primary hover:bg-primary/90 transition-all"
-						>
-							<SendHorizonal className="h-5 w-5 text-primary-foreground" />
-						</Button>
+
+						<motion.div className="flex gap-2 items-center">
+							<motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+								<Button
+									type="button"
+									size="icon"
+									variant="ghost"
+									onClick={() => setEmojiPickerOpen(true)}
+									className="h-10 w-10 rounded-full"
+								>
+									<Smile className="h-5 w-5" />
+								</Button>
+							</motion.div>
+
+							<AnimatedButton disabled={createPending || isEmpty} />
+						</motion.div>
 					</form>
 				</Form>
 			</div>
