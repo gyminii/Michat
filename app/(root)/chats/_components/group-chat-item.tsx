@@ -35,16 +35,6 @@ export const GroupChatItem = ({
 						: "bg-gradient-to-r from-gray-50/80 to-white/50 dark:from-gray-800/50 dark:to-gray-700/30 border-gray-200/50 dark:border-gray-600/30 hover:from-gray-100/90 hover:to-white/80 dark:hover:from-gray-700/70 dark:hover:to-gray-600/50 hover:border-gray-300/60 dark:hover:border-gray-500/50 hover:shadow-md hover:shadow-gray-200/50 dark:hover:shadow-gray-800/50"
 				)}
 			>
-				{/* Selected indicator with glow effect */}
-				{isSelected && (
-					<div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-primary to-primary/70 rounded-r-full shadow-sm shadow-primary/50" />
-				)}
-
-				{/* Subtle pattern overlay for unselected items */}
-				{!isSelected && (
-					<div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-gray-100/10 dark:from-transparent dark:via-gray-700/5 dark:to-gray-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-				)}
-
 				<div className="flex flex-row items-center gap-4 flex-1 min-w-0 relative z-10">
 					<div className="relative">
 						<Avatar
@@ -67,7 +57,6 @@ export const GroupChatItem = ({
 							</AvatarFallback>
 						</Avatar>
 
-						{/* Enhanced group indicator */}
 						<div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-full flex items-center justify-center shadow-sm">
 							<Users
 								className={cn(
@@ -92,7 +81,7 @@ export const GroupChatItem = ({
 							>
 								{name}
 							</h4>
-							<span
+							{/* <span
 								className={cn(
 									"text-xs shrink-0 transition-colors duration-300",
 									isSelected
@@ -101,7 +90,7 @@ export const GroupChatItem = ({
 								)}
 							>
 								2:30 PM
-							</span>
+							</span> */}
 						</div>
 
 						{lastMessageSender && lastMessageContent ? (
@@ -147,7 +136,6 @@ export const GroupChatItem = ({
 						</Badge>
 					)}
 
-					{/* Enhanced activity indicator */}
 					<div className="flex items-center gap-1">
 						<div
 							className={cn(

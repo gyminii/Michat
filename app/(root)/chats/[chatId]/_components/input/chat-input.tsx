@@ -2,14 +2,12 @@
 
 import type React from "react";
 
-import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { api } from "@/convex/_generated/api";
 import { useChat } from "@/hooks/use-chat";
 import { useMutationState } from "@/hooks/use-mutation-state";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ConvexError } from "convex/values";
-import { motion } from "framer-motion";
 import { Smile } from "lucide-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -91,30 +89,28 @@ const ChatInput = () => {
 	};
 
 	return (
-		<div className="border-t w-full p-3 bg-background relative">
+		<div className="flex items-center border-t w-full p-3 bg-background relative dark:bg-gray-900">
 			<AnimatedEmojiPicker
 				isOpen={emojiPickerOpen}
 				onClose={() => setEmojiPickerOpen(false)}
 				onEmojiSelect={insertEmoji}
 			/>
 
-			<div className="flex gap-2 items-center w-full">
-				<motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-					<ActionsPopover setEmojiPickerOpen={setEmojiPickerOpen} />
-				</motion.div>
+			<div className="flex items-center gap-2 w-full">
+				<ActionsPopover setEmojiPickerOpen={setEmojiPickerOpen} />
 
 				<Form {...form}>
 					<form
 						onSubmit={handleSubmit(onSubmit)}
-						className="flex gap-2 items-center w-full"
+						className="flex items-center gap-2 w-full"
 					>
 						<FormField
 							control={control}
 							name="content"
 							render={({ field }) => (
-								<FormItem className="h-full w-full">
+								<FormItem className="w-full">
 									<FormControl>
-										<motion.div whileFocus={{ scale: 1.01 }} className="w-full">
+										<div className="relative w-full flex items-center">
 											<TextareaAutosize
 												{...field}
 												ref={textareaRef}
@@ -131,30 +127,24 @@ const ChatInput = () => {
 												}}
 												onChange={handleInputChange}
 												onClick={handleInputChange}
-												className="text-sm min-h-full w-full resize-none border rounded-lg outline-0 bg-card text-card-foreground placeholder:text-muted-foreground p-3 focus:ring-2 focus:ring-primary/20 transition-all"
+												className="text-sm w-full resize-none border rounded-lg outline-0 bg-card text-card-foreground placeholder:text-muted-foreground p-3 pr-10 focus:ring-2 focus:ring-primary/20 transition-all"
 											/>
-										</motion.div>
+
+											<button
+												type="button"
+												onClick={() => setEmojiPickerOpen(true)}
+												className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+												title="Insert Emoji"
+											>
+												<Smile className="h-5 w-5" />
+											</button>
+										</div>
 									</FormControl>
-									{/* Error message removed */}
 								</FormItem>
 							)}
 						/>
 
-						<motion.div className="flex gap-2 items-center">
-							<motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-								<Button
-									type="button"
-									size="icon"
-									variant="ghost"
-									onClick={() => setEmojiPickerOpen(true)}
-									className="h-10 w-10 rounded-full"
-								>
-									<Smile className="h-5 w-5" />
-								</Button>
-							</motion.div>
-
-							<AnimatedButton disabled={createPending || isEmpty} />
-						</motion.div>
+						<AnimatedButton disabled={createPending || isEmpty} />
 					</form>
 				</Form>
 			</div>

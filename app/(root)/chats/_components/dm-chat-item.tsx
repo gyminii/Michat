@@ -26,6 +26,14 @@ export const DMChatItem = ({
 }: Props) => {
 	const pathname = usePathname();
 	const isSelected = pathname === `/chats/${id}`;
+	console.log(
+		id,
+		imageUrl,
+		username,
+		lastMessageContent,
+		lastMessageSender,
+		unseenCount
+	);
 	return (
 		<Link href={`/chats/${id}`} className="w-full block">
 			<Card
@@ -36,16 +44,6 @@ export const DMChatItem = ({
 						: "bg-gradient-to-r from-gray-50/80 to-white/50 dark:from-gray-800/50 dark:to-gray-700/30 border-gray-200/50 dark:border-gray-600/30 hover:from-gray-100/90 hover:to-white/80 dark:hover:from-gray-700/70 dark:hover:to-gray-600/50 hover:border-gray-300/60 dark:hover:border-gray-500/50 hover:shadow-md hover:shadow-gray-200/50 dark:hover:shadow-gray-800/50"
 				)}
 			>
-				{/* Selected indicator with glow effect */}
-				{isSelected && (
-					<div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-primary to-primary/70 rounded-r-full shadow-sm shadow-primary/50" />
-				)}
-
-				{/* Subtle pattern overlay for unselected items */}
-				{!isSelected && (
-					<div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-gray-100/10 dark:from-transparent dark:via-gray-700/5 dark:to-gray-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-				)}
-
 				<div className="flex flex-row items-center gap-4 flex-1 min-w-0 relative z-10">
 					<div className="relative">
 						<Avatar
@@ -64,7 +62,7 @@ export const DMChatItem = ({
 								className={cn(
 									"font-semibold text-sm transition-all duration-300",
 									isSelected
-										? "bg-primary/20 text-primary"
+										? "bg-primary/20 text-primary dark:text-white"
 										: "bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 text-gray-700 dark:text-gray-200 group-hover:from-primary/10 group-hover:to-primary/5 group-hover:text-primary"
 								)}
 							>
@@ -90,7 +88,7 @@ export const DMChatItem = ({
 							>
 								{username}
 							</h5>
-							<span
+							{/* <span
 								className={cn(
 									"text-xs shrink-0 transition-colors duration-300",
 									isSelected
@@ -99,7 +97,7 @@ export const DMChatItem = ({
 								)}
 							>
 								2:30 PM
-							</span>
+							</span> */}
 						</div>
 
 						{lastMessageSender && lastMessageContent ? (

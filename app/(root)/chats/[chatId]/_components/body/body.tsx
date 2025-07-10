@@ -154,7 +154,7 @@ const Body = ({ members, callType, setCallType }: Props) => {
 
 		return formatSeenBy(seenUsers);
 	};
-
+	console.log(messages);
 	return (
 		<div className="h-full w-full overflow-y-auto p-4 pb-2">
 			<div className="flex flex-col-reverse gap-4 min-h-full">

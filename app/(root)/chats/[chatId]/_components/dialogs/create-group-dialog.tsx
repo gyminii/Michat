@@ -101,22 +101,19 @@ const CreateGroupDialog = () => {
 						<Button
 							size="icon"
 							variant="outline"
-							className="rounded-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-md"
+							className="h-8 w-8 bg-transparent"
 						>
-							<CirclePlus className="h-4 w-4 transition-colors duration-300 hover:text-primary" />
+							<CirclePlus className="h-4 w-4" />
 						</Button>
 					</DialogTrigger>
 				</TooltipTrigger>
-				<TooltipContent
-					side="bottom"
-					className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900"
-				>
-					<p>Create Group</p>
+				<TooltipContent side="bottom">
+					<p className="text-white">Create Group</p>
 				</TooltipContent>
 			</Tooltip>
 
 			<DialogContent className="sm:max-w-md bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 shadow-2xl">
-				<DialogHeader className="space-y-3">
+				<DialogHeader>
 					<div className="flex items-center gap-3">
 						<div className="p-2 rounded-full bg-primary/10 border border-primary/20">
 							<Users className="h-5 w-5 text-primary" />

@@ -33,7 +33,7 @@ const Header = ({ imageUrl, name, options, setCallType }: Props) => {
 	};
 
 	return (
-		<div className="h-15 w-full flex items-center justify-between p-4 bg-background border-b">
+		<div className="h-15 w-full flex items-center justify-between p-4 bg-background border-b  dark:bg-gray-900">
 			<div className="flex items-center gap-3">
 				<Button
 					variant="ghost"

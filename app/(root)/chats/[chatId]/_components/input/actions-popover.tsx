@@ -34,6 +34,7 @@ const ActionsPopover = ({ setEmojiPickerOpen }: Props) => {
 						variant="outline"
 						onClick={() => setEmojiPickerOpen(true)}
 						size="icon"
+						className="rounded-full bg-white dark:bg-gray-800"
 					>
 						<Smile />
 					</Button>

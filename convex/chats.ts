@@ -5,7 +5,7 @@ import { Id } from "./_generated/dataModel";
 
 export const get = query({
 	args: {},
-	handler: async (ctx, args) => {
+	handler: async (ctx, _args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
 			throw new Error("Unauthorized");

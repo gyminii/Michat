@@ -48,7 +48,7 @@ const Message = ({
 				<AvatarFallback>{senderName.substring(0, 1)}</AvatarFallback>
 			</Avatar>
 			<div
-				className={cn("flex flex-col max-w-[75%]", {
+				className={cn("flex flex-col max-w-[80%]", {
 					"order-1 items-end": fromCurrentUser,
 					"order-2 items-start": !fromCurrentUser,
 				})}
@@ -77,7 +77,7 @@ const Message = ({
 					whileHover={{ boxShadow: "0 5px 15px rgba(0,0,0,0.1)" }}
 				>
 					{type === "text" ? (
-						<p className="text-wrap break-words whitespace-pre-wrap">
+						<p className="text-wrap break-words whitespace-pre-wrap	text-white">
 							{content}
 						</p>
 					) : null}
@@ -87,7 +87,7 @@ const Message = ({
 						<Badge
 							variant="default"
 							className={cn(
-								"bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100",
+								"bg-blue-100 text-white dark:bg-blue-900 dark:text-blue-100",
 								"font-medium"
 							)}
 						>
@@ -95,10 +95,13 @@ const Message = ({
 						</Badge>
 					) : null}
 					<p
-						className={cn("text-xs flex w-full mt-1 italic opacity-70", {
-							"justify-end": fromCurrentUser,
-							"justify-start": !fromCurrentUser,
-						})}
+						className={cn(
+							"text-xs flex w-full mt-1 italic opacity-70 text-white",
+							{
+								"justify-end": fromCurrentUser,
+								"justify-start": !fromCurrentUser,
+							}
+						)}
 					>
 						{formatTime(createdAt)}
 					</p>

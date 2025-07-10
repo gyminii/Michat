@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MessageCircle, Settings } from "lucide-react";
 import type React from "react";
+import { ThemeToggleButton } from "./theme-toggle-button";
 
 type Props = {
 	children: React.ReactNode;
@@ -25,7 +26,6 @@ export const SidebarLayout = ({
 	children,
 	sidebarContent,
 	sidebarTitle,
-	sidebarSubtitle,
 	sidebarAction,
 	showOnMobile = false,
 }: Props) => {
@@ -51,9 +51,7 @@ export const SidebarLayout = ({
 					</div>
 
 					{/* Navigation Tabs */}
-					<div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-						<NavigationTabs />
-					</div>
+					<NavigationTabs />
 
 					{/* Sidebar Content */}
 					<div className="flex-1 overflow-hidden flex flex-col">
@@ -68,7 +66,6 @@ export const SidebarLayout = ({
 				</div>
 			);
 		} else {
-			// Show main content with navigation tabs at top
 			return <div className="h-full w-full">{children}</div>;
 		}
 	}
@@ -83,7 +80,7 @@ export const SidebarLayout = ({
 					className="flex flex-col border-r border-gray-200 dark:border-gray-700"
 				>
 					{/* Header */}
-					<div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+					<div className="h-15 flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
 						<div className="flex items-center gap-2">
 							<div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
 								<MessageCircle className="w-4 h-4 text-white" />
@@ -92,15 +89,14 @@ export const SidebarLayout = ({
 								Michat
 							</span>
 						</div>
-						<Button variant="ghost" size="icon" className="h-8 w-8">
+						<ThemeToggleButton />
+						{/* <Button variant="ghost" size="icon" className="h-8 w-8">
 							<Settings className="h-4 w-4" />
-						</Button>
+						</Button> */}
 					</div>
 
 					{/* Navigation Tabs */}
-					<div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-						<NavigationTabs />
-					</div>
+					<NavigationTabs />
 
 					{/* Sidebar Content */}
 					<div className="flex-1 overflow-hidden flex flex-col">

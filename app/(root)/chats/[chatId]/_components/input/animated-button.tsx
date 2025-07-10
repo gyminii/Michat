@@ -28,7 +28,7 @@ const AnimatedButton = ({ disabled, onClick, type = "submit" }: Props) => {
 						repeatDelay: 5,
 					}}
 				>
-					<SendHorizonal className="h-5 w-5 text-primary-foreground" />
+					<SendHorizonal className="h-5 w-5 text-primary-foreground dark:text-white" />
 				</motion.div>
 			</Button>
 		</motion.div>
