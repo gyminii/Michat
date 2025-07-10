@@ -1,33 +1,125 @@
 "use client";
 
-import * as React from "react";
-
-import SidebarBodyContents from "@/app/(components)/sidebar/sidebar-body-contents";
-import SidebarHeaderContents from "@/app/(components)/sidebar/sidebar-header-contents";
+import { NavigationTabs } from "@/components/navigation-tabs";
+import { Button } from "@/components/ui/button";
 import {
-	Sidebar,
-	SidebarContent,
-	SidebarFooter,
-	SidebarHeader,
-	SidebarRail,
-} from "@/components/ui/sidebar";
-import { UserButton } from "@clerk/nextjs";
-import { ThemeToggle } from "./ui/theme/theme-toggle";
+	ResizableHandle,
+	ResizablePanel,
+	ResizablePanelGroup,
+} from "@/components/ui/resizable";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { MessageCircle, Settings } from "lucide-react";
+import type React from "react";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type Props = {
+	children: React.ReactNode;
+	sidebarContent: React.ReactNode;
+	sidebarTitle: string;
+	sidebarSubtitle?: string;
+	sidebarAction?: React.ReactNode;
+	showOnMobile?: boolean;
+};
+
+export const SidebarLayout = ({
+	children,
+	sidebarContent,
+	sidebarTitle,
+	sidebarSubtitle,
+	sidebarAction,
+	showOnMobile = false,
+}: Props) => {
+	const isMobile = useIsMobile();
+
+	if (isMobile) {
+		if (showOnMobile) {
+			return (
+				<div className="h-full w-full flex flex-col bg-white dark:bg-gray-900">
+					{/* Header */}
+					<div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+						<div className="flex items-center gap-2">
+							<div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+								<MessageCircle className="w-4 h-4 text-white" />
+							</div>
+							<span className="font-semibold text-gray-900 dark:text-gray-100">
+								Michat
+							</span>
+						</div>
+						<Button variant="ghost" size="icon" className="h-8 w-8">
+							<Settings className="h-4 w-4" />
+						</Button>
+					</div>
+
+					{/* Navigation Tabs */}
+					<div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+						<NavigationTabs />
+					</div>
+
+					{/* Sidebar Content */}
+					<div className="flex-1 overflow-hidden flex flex-col">
+						<div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
+							<h2 className="font-medium text-gray-900 dark:text-gray-100">
+								{sidebarTitle}
+							</h2>
+							{sidebarAction}
+						</div>
+						<ScrollArea className="flex-1 p-2">{sidebarContent}</ScrollArea>
+					</div>
+				</div>
+			);
+		} else {
+			// Show main content with navigation tabs at top
+			return <div className="h-full w-full">{children}</div>;
+		}
+	}
+
 	return (
-		<Sidebar collapsible="icon" {...props}>
-			<SidebarHeader>
-				<SidebarHeaderContents />
-			</SidebarHeader>
-			<SidebarContent>
-				<SidebarBodyContents />
-			</SidebarContent>
-			<SidebarFooter>
-				<ThemeToggle />
-				<UserButton />
-			</SidebarFooter>
-			<SidebarRail />
-		</Sidebar>
+		<div className="h-full w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
+			<ResizablePanelGroup direction="horizontal" className="h-full w-full">
+				<ResizablePanel
+					defaultSize={30}
+					minSize={20}
+					maxSize={40}
+					className="flex flex-col border-r border-gray-200 dark:border-gray-700"
+				>
+					{/* Header */}
+					<div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+						<div className="flex items-center gap-2">
+							<div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+								<MessageCircle className="w-4 h-4 text-white" />
+							</div>
+							<span className="font-semibold text-gray-900 dark:text-gray-100">
+								Michat
+							</span>
+						</div>
+						<Button variant="ghost" size="icon" className="h-8 w-8">
+							<Settings className="h-4 w-4" />
+						</Button>
+					</div>
+
+					{/* Navigation Tabs */}
+					<div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+						<NavigationTabs />
+					</div>
+
+					{/* Sidebar Content */}
+					<div className="flex-1 overflow-hidden flex flex-col">
+						<div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
+							<h2 className="font-medium text-gray-900 dark:text-gray-100">
+								{sidebarTitle}
+							</h2>
+							{sidebarAction}
+						</div>
+						<ScrollArea className="flex-1 p-2">{sidebarContent}</ScrollArea>
+					</div>
+				</ResizablePanel>
+
+				<ResizableHandle withHandle />
+
+				<ResizablePanel defaultSize={70} className="flex flex-col">
+					{children}
+				</ResizablePanel>
+			</ResizablePanelGroup>
+		</div>
 	);
-}
+};

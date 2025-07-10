@@ -4,7 +4,7 @@ import { Card } from "../ui/card";
 const ChatFallback = () => {
 	return (
 		<div className="h-full w-full flex flex-col">
-			<Card className="w-full h-full flex flex-col items-center justify-center bg-secondary text-secondary-foreground">
+			<Card className="w-full h-full flex flex-col items-center justify-center bg-secondary dark:bg-gray-800 text-secondary-foreground dark:text-gray-200 border-0 shadow-none">
 				<Image
 					src="/logo.svg"
 					alt="logo"
@@ -13,7 +13,12 @@ const ChatFallback = () => {
 					priority
 					className="animate-pulse duration-800"
 				/>
-				<p className="mt-4">Gotta lock in and socialize</p>
+				<div className="mt-4 text-center">
+					<p className="text-lg font-medium">Select a conversation</p>
+					<p className="text-sm text-muted-foreground dark:text-gray-400 mt-1">
+						Choose a chat to start messaging
+					</p>
+				</div>
 			</Card>
 		</div>
 	);

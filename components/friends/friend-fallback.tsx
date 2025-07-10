@@ -1,12 +1,10 @@
 import Image from "next/image";
 import { Card } from "../ui/card";
-import { ResizablePanel } from "../ui/resizable";
 
 const FriendFallback = () => {
 	return (
-		<ResizablePanel className="hidden md:flex flex-col gap-2 p-2">
-			<Card className="hidden w-full h-full md:flex p-2 items-center justify-center bg-secondary text-secondary-foreground">
-				{/* Select/start a conversation to get started */}
+		<div className="h-full w-full flex flex-col">
+			<Card className="w-full h-full flex flex-col items-center justify-center bg-secondary dark:bg-gray-800 text-secondary-foreground dark:text-gray-200 border-0 shadow-none">
 				<Image
 					src="/logo.svg"
 					alt="logo"
@@ -15,10 +13,14 @@ const FriendFallback = () => {
 					priority
 					className="animate-pulse duration-800"
 				/>
-				<p>Got no friends</p>
-				<p>Gotta lock in and socialize :(</p>
+				<div className="mt-4 text-center">
+					<p className="text-lg font-medium">Connect with Friends</p>
+					<p className="text-sm text-muted-foreground dark:text-gray-400 mt-1">
+						Send friend requests to start chatting
+					</p>
+				</div>
 			</Card>
-		</ResizablePanel>
+		</div>
 	);
 };
 

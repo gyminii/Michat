@@ -8,7 +8,9 @@ type Props = {
 const layout = ({ children }: Props) => {
 	return (
 		<LayoutProvider>
-			<div className="h-full w-full bg-gray-100 p-0 md:p-4">{children}</div>
+			<div className="h-full w-full bg-gray-100 dark:bg-gray-950 p-0 md:p-4">
+				{children}
+			</div>
 		</LayoutProvider>
 	);
 };
