@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -63,7 +65,6 @@ const Message = ({
 						{senderName}
 					</motion.span>
 				)}
-				{}
 				<motion.div
 					className={cn(
 						"px-4 py-2 rounded-2xl shadow-sm transition-all relative",
@@ -77,7 +78,12 @@ const Message = ({
 					whileHover={{ boxShadow: "0 5px 15px rgba(0,0,0,0.1)" }}
 				>
 					{type === "text" ? (
-						<p className="text-wrap break-words whitespace-pre-wrap	text-white">
+						<p
+							className={cn("text-wrap break-words whitespace-pre-wrap", {
+								"text-white": fromCurrentUser,
+								"text-gray-800 dark:text-gray-200": !fromCurrentUser,
+							})}
+						>
 							{content}
 						</p>
 					) : null}
@@ -87,7 +93,7 @@ const Message = ({
 						<Badge
 							variant="default"
 							className={cn(
-								"bg-blue-100 text-white dark:bg-blue-900 dark:text-blue-100",
+								"bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100",
 								"font-medium"
 							)}
 						>
@@ -95,13 +101,11 @@ const Message = ({
 						</Badge>
 					) : null}
 					<p
-						className={cn(
-							"text-xs flex w-full mt-1 italic opacity-70 text-white",
-							{
-								"justify-end": fromCurrentUser,
-								"justify-start": !fromCurrentUser,
-							}
-						)}
+						className={cn("text-xs flex w-full mt-1 italic opacity-70", {
+							"justify-end text-white": fromCurrentUser,
+							"justify-start text-gray-800 dark:text-gray-200":
+								!fromCurrentUser,
+						})}
 					>
 						{formatTime(createdAt)}
 					</p>
