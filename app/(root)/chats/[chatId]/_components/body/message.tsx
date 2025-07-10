@@ -1,10 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { motion } from "framer-motion";
 import type React from "react";
 import FilePreview from "./file-preview";
 import ImagePreview from "./image-preview";
-import { Badge } from "@/components/ui/badge";
 
 type Props = {
 	fromCurrentUser: boolean;
@@ -15,6 +16,8 @@ type Props = {
 	createdAt: number;
 	type: string;
 	seen?: React.ReactNode;
+	isNew?: boolean;
+	messageId: string;
 };
 
 const Message = ({
@@ -28,7 +31,6 @@ const Message = ({
 	seen,
 }: Props) => {
 	const formatTime = (timestamp: number) => format(timestamp, "HH:mm");
-
 	return (
 		<div
 			className={cn("flex items-end gap-2 group transition-all", {
@@ -45,7 +47,6 @@ const Message = ({
 				<AvatarImage src={senderImage || "/placeholder.svg"} />
 				<AvatarFallback>{senderName.substring(0, 1)}</AvatarFallback>
 			</Avatar>
-
 			<div
 				className={cn("flex flex-col max-w-[75%]", {
 					"order-1 items-end": fromCurrentUser,
@@ -53,18 +54,27 @@ const Message = ({
 				})}
 			>
 				{!lastByUser && !fromCurrentUser && (
-					<span className="text-xs text-muted-foreground ml-1 mb-1">
+					<motion.span
+						className="text-xs text-muted-foreground ml-1 mb-1"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ delay: 0.2 }}
+					>
 						{senderName}
-					</span>
+					</motion.span>
 				)}
-
-				<div
-					className={cn("px-4 py-2 rounded-2xl shadow-sm transition-all", {
-						"bg-primary text-primary-foreground": fromCurrentUser,
-						"bg-secondary text-secondary-foreground": !fromCurrentUser,
-						"rounded-br-md": !lastByUser && fromCurrentUser,
-						"rounded-bl-md": !lastByUser && !fromCurrentUser,
-					})}
+				{}
+				<motion.div
+					className={cn(
+						"px-4 py-2 rounded-2xl shadow-sm transition-all relative",
+						{
+							"bg-primary text-primary-foreground": fromCurrentUser,
+							"bg-secondary text-secondary-foreground": !fromCurrentUser,
+							"rounded-br-md": !lastByUser && fromCurrentUser,
+							"rounded-bl-md": !lastByUser && !fromCurrentUser,
+						}
+					)}
+					whileHover={{ boxShadow: "0 5px 15px rgba(0,0,0,0.1)" }}
 				>
 					{type === "text" ? (
 						<p className="text-wrap break-words whitespace-pre-wrap">
@@ -92,7 +102,7 @@ const Message = ({
 					>
 						{formatTime(createdAt)}
 					</p>
-				</div>
+				</motion.div>
 				{seen && <div className="mt-1">{seen}</div>}
 			</div>
 		</div>

@@ -1,203 +1,221 @@
+"use client";
+
 import { cn } from "@/lib/utils";
-import { IconUpload } from "@tabler/icons-react";
-import { X } from "lucide-react";
-import { motion } from "motion/react";
-import React, { useRef, useState } from "react";
-import { useDropzone } from "react-dropzone";
+import { Upload, X, File, ImageIcon, Video, FileText } from "lucide-react";
+import type React from "react";
+import { useRef, useState } from "react";
 import { Button } from "./button";
 
-const mainVariant = {
-	initial: {
-		x: 0,
-		y: 0,
-	},
-	animate: {
-		x: 20,
-		y: -20,
-		opacity: 0.9,
-	},
-};
-
-const secondaryVariant = {
-	initial: {
-		opacity: 0,
-	},
-	animate: {
-		opacity: 1,
-	},
-};
+interface FileUploadProps {
+	onChange?: (files: File[]) => void;
+	accept?: string;
+	multiple?: boolean;
+	maxSize?: number; // in MB
+}
 
 export const FileUpload = ({
 	onChange,
-}: {
-	onChange?: (files: File[]) => void;
-}) => {
+	accept,
+	multiple = true,
+	maxSize = 10,
+}: FileUploadProps) => {
 	const [files, setFiles] = useState<File[]>([]);
+	const [isDragOver, setIsDragOver] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	const getFileIcon = (file: File) => {
+		if (file.type.startsWith("image/"))
+			return <ImageIcon className="h-4 w-4" />;
+		if (file.type.startsWith("video/")) return <Video className="h-4 w-4" />;
+		if (file.type.includes("pdf") || file.type.includes("document"))
+			return <FileText className="h-4 w-4" />;
+		return <File className="h-4 w-4" />;
+	};
+
+	const formatFileSize = (bytes: number) => {
+		if (bytes === 0) return "0 Bytes";
+		const k = 1024;
+		const sizes = ["Bytes", "KB", "MB", "GB"];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return (
+			Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+		);
+	};
+
+	const validateFile = (file: File) => {
+		if (maxSize && file.size > maxSize * 1024 * 1024) {
+			return `File size must be less than ${maxSize}MB`;
+		}
+		return null;
+	};
+
 	const handleFileChange = (newFiles: File[]) => {
-		setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+		const validFiles: File[] = [];
+		const errors: string[] = [];
+
+		newFiles.forEach((file) => {
+			const error = validateFile(file);
+			if (error) {
+				errors.push(`${file.name}: ${error}`);
+			} else {
+				validFiles.push(file);
+			}
+		});
+
+		if (errors.length > 0) {
+			// You can show these errors in a toast or alert
+			console.error("File validation errors:", errors);
+		}
+
+		const updatedFiles = multiple ? [...files, ...validFiles] : validFiles;
+		setFiles(updatedFiles);
 		if (onChange) {
-			onChange(newFiles);
+			onChange(updatedFiles);
 		}
 	};
-	const clearFiles = (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.stopPropagation();
-		e.preventDefault();
+
+	const removeFile = (indexToRemove: number) => {
+		const updatedFiles = files.filter((_, index) => index !== indexToRemove);
+		setFiles(updatedFiles);
+		if (onChange) {
+			onChange(updatedFiles);
+		}
+	};
+
+	const clearAllFiles = () => {
+		setFiles([]);
 		if (onChange) {
 			onChange([]);
 		}
-		setFiles([]);
 	};
 
 	const handleClick = () => {
 		fileInputRef.current?.click();
 	};
 
-	const { getRootProps, isDragActive } = useDropzone({
-		multiple: false,
-		noClick: true,
-		onDrop: handleFileChange,
-		onDropRejected: (error) => {
-			console.log(error);
-		},
-	});
+	const handleDragOver = (e: React.DragEvent) => {
+		e.preventDefault();
+		setIsDragOver(true);
+	};
+
+	const handleDragLeave = (e: React.DragEvent) => {
+		e.preventDefault();
+		setIsDragOver(false);
+	};
+
+	const handleDrop = (e: React.DragEvent) => {
+		e.preventDefault();
+		setIsDragOver(false);
+		const droppedFiles = Array.from(e.dataTransfer.files);
+		handleFileChange(droppedFiles);
+	};
 
 	return (
-		<div className="w-full" {...getRootProps()}>
-			<motion.div
+		<div className="w-full space-y-4">
+			<input
+				ref={fileInputRef}
+				type="file"
+				multiple={multiple}
+				accept={accept}
+				onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
+				className="hidden"
+			/>
+
+			{/* Upload Zone */}
+			<div
 				onClick={handleClick}
-				whileHover="animate"
-				className="p-2 pb-6 group/file block rounded-lg cursor-pointer w-full relative overflow-hidden"
+				onDragOver={handleDragOver}
+				onDragLeave={handleDragLeave}
+				onDrop={handleDrop}
+				className={cn(
+					"relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300",
+					isDragOver
+						? "border-primary bg-primary/5 dark:bg-primary/10"
+						: "border-gray-300 dark:border-gray-600 hover:border-primary/50 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+				)}
 			>
-				{files?.length ? (
-					<div className="w-full flex justify-end p-2">
-						<Button variant="outline" size="icon" onClick={clearFiles}>
-							<X />
-						</Button>
+				<div className="flex flex-col items-center gap-4">
+					<div
+						className={cn(
+							"p-3 rounded-full transition-all duration-300",
+							isDragOver
+								? "bg-primary/20 text-primary"
+								: "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-primary/10 hover:text-primary"
+						)}
+					>
+						<Upload className="h-6 w-6" />
 					</div>
-				) : null}
-				<input
-					ref={fileInputRef}
-					id="file-upload-handle"
-					type="file"
-					onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
-					className="hidden"
-				/>
-
-				<div className="flex flex-col items-center justify-center">
-					<div className="relative w-full max-w-xl mx-auto">
-						{files.length > 0 &&
-							files.map((file, idx) => (
-								<motion.div
-									key={"file" + idx}
-									layoutId={idx === 0 ? "file-upload" : "file-upload-" + idx}
-									className={cn(
-										"relative overflow-hidden z-40 bg-white dark:bg-neutral-900 flex flex-col items-start justify-start md:h-24 p-4 mt-4 w-full mx-auto rounded-md",
-										"shadow-sm"
-									)}
-								>
-									<div className="flex justify-between w-full items-center gap-4">
-										<motion.p
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											layout
-											className="text-base text-neutral-700 dark:text-neutral-300 truncate max-w-xs"
-										>
-											{file.name}
-										</motion.p>
-										<motion.p
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											layout
-											className="rounded-lg px-2 py-1 w-fit shrink-0 text-sm text-neutral-600 dark:bg-neutral-800 dark:text-white shadow-input"
-										>
-											{(file.size / (1024 * 1024)).toFixed(2)} MB
-										</motion.p>
-									</div>
-
-									<div className="flex text-sm md:flex-row flex-col items-start md:items-center w-full mt-2 justify-between text-neutral-600 dark:text-neutral-400">
-										<motion.p
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											layout
-											className="px-1 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 "
-										>
-											{file.type}
-										</motion.p>
-
-										<motion.p
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											layout
-										>
-											modified{" "}
-											{new Date(file.lastModified).toLocaleDateString()}
-										</motion.p>
-									</div>
-								</motion.div>
-							))}
-						{!files.length && (
-							<motion.div
-								layoutId="file-upload"
-								variants={mainVariant}
-								transition={{
-									type: "spring",
-									stiffness: 300,
-									damping: 20,
-								}}
-								className={cn(
-									"relative group-hover/file:shadow-2xl z-40 bg-white dark:bg-neutral-900 flex items-center justify-center h-32 mt-4 w-full max-w-[8rem] mx-auto rounded-md",
-									"shadow-[0px_10px_50px_rgba(0,0,0,0.1)]"
-								)}
-							>
-								{isDragActive ? (
-									<motion.p
-										initial={{ opacity: 0 }}
-										animate={{ opacity: 1 }}
-										className="text-neutral-600 flex flex-col items-center"
-									>
-										Drop it
-										<IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
-									</motion.p>
-								) : (
-									<IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-300" />
-								)}
-							</motion.div>
-						)}
-
-						{!files.length && (
-							<motion.div
-								variants={secondaryVariant}
-								className="absolute opacity-0 border border-dashed border-sky-400 inset-0 z-30 bg-transparent flex items-center justify-center h-32 mt-4 w-full max-w-[8rem] mx-auto rounded-md"
-							></motion.div>
-						)}
+					<div className="space-y-2">
+						<p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+							{isDragOver
+								? "Drop files here"
+								: "Click to upload or drag and drop"}
+						</p>
+						<p className="text-xs text-gray-500 dark:text-gray-400">
+							{accept
+								? `Supported formats: ${accept}`
+								: "All file types supported"}{" "}
+							• Max {maxSize}MB per file
+						</p>
 					</div>
 				</div>
-			</motion.div>
-		</div>
-	);
-};
+			</div>
 
-export function GridPattern() {
-	const columns = 41;
-	const rows = 11;
-	return (
-		<div className="flex bg-gray-100 dark:bg-neutral-900 shrink-0 flex-wrap justify-center items-center gap-x-px gap-y-px  scale-105">
-			{Array.from({ length: rows }).map((_, row) =>
-				Array.from({ length: columns }).map((_, col) => {
-					const index = row * columns + col;
-					return (
-						<div
-							key={`${col}-${row}`}
-							className={`w-10 h-10 flex shrink-0 rounded-[2px] ${
-								index % 2 === 0
-									? "bg-gray-50 dark:bg-neutral-950"
-									: "bg-gray-50 dark:bg-neutral-950 shadow-[0px_0px_1px_3px_rgba(255,255,255,1)_inset] dark:shadow-[0px_0px_1px_3px_rgba(0,0,0,1)_inset]"
-							}`}
-						/>
-					);
-				})
+			{/* Selected Files */}
+			{files.length > 0 && (
+				<div className="space-y-3">
+					<div className="flex items-center justify-between">
+						<span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+							Selected Files ({files.length})
+						</span>
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={clearAllFiles}
+							className="h-8 px-3 rounded-lg bg-transparent hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all duration-200"
+						>
+							<X className="h-3 w-3 mr-1" />
+							Clear All
+						</Button>
+					</div>
+
+					<div className="space-y-2 max-h-60 overflow-y-auto">
+						{files.map((file, index) => (
+							<div
+								key={`${file.name}-${index}`}
+								className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl hover:shadow-md transition-all duration-300"
+							>
+								<div className="flex-shrink-0 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-400">
+									{getFileIcon(file)}
+								</div>
+
+								<div className="flex-1 min-w-0">
+									<p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+										{file.name}
+									</p>
+									<div className="flex items-center gap-3 mt-1">
+										<span className="text-xs text-gray-500 dark:text-gray-400">
+											{formatFileSize(file.size)}
+										</span>
+										<span className="text-xs text-gray-500 dark:text-gray-400">
+											{new Date(file.lastModified).toLocaleDateString()}
+										</span>
+									</div>
+								</div>
+
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={() => removeFile(index)}
+									className="h-8 w-8 p-0 rounded-lg hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all duration-200"
+								>
+									<X className="h-3 w-3" />
+								</Button>
+							</div>
+						))}
+					</div>
+				</div>
 			)}
 		</div>
 	);
-}
+};

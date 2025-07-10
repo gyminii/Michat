@@ -34,11 +34,12 @@ import {
 } from "@/components/ui/tooltip";
 import { api } from "@/convex/_generated/api";
 import { useMutationState } from "@/hooks/use-mutation-state";
+import { cn } from "@/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
-import { CirclePlus, X } from "lucide-react";
+import { ChevronDown, CirclePlus, Users, X } from "lucide-react";
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -74,8 +75,7 @@ const CreateGroupDialog = () => {
 		return friends
 			? friends.filter((friend) => !members.includes(friend._id))
 			: [];
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [members.length, friends?.length]);
+	}, [members, friends]);
 	const handleSubmit = async (
 		values: z.infer<typeof createGroupFormSchema>
 	) => {
@@ -96,81 +96,122 @@ const CreateGroupDialog = () => {
 	return (
 		<Dialog>
 			<Tooltip>
-				<TooltipTrigger>
-					<Button size="icon" variant="outline">
-						<DialogTrigger>
-							<CirclePlus />
-						</DialogTrigger>
-					</Button>
+				<TooltipTrigger asChild>
+					<DialogTrigger asChild>
+						<Button
+							size="icon"
+							variant="outline"
+							className="rounded-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-md"
+						>
+							<CirclePlus className="h-4 w-4 transition-colors duration-300 hover:text-primary" />
+						</Button>
+					</DialogTrigger>
 				</TooltipTrigger>
-				<TooltipContent>
+				<TooltipContent
+					side="bottom"
+					className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900"
+				>
 					<p>Create Group</p>
 				</TooltipContent>
 			</Tooltip>
 
-			<DialogContent className="block">
-				<DialogHeader>
-					<DialogTitle>Create group</DialogTitle>
-					<DialogDescription>
-						Add your friends to get started!
-					</DialogDescription>
+			<DialogContent className="sm:max-w-md bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 shadow-2xl">
+				<DialogHeader className="space-y-3">
+					<div className="flex items-center gap-3">
+						<div className="p-2 rounded-full bg-primary/10 border border-primary/20">
+							<Users className="h-5 w-5 text-primary" />
+						</div>
+						<div>
+							<DialogTitle className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+								Create Group
+							</DialogTitle>
+							<DialogDescription className="text-gray-600 dark:text-gray-400">
+								Add your friends to get started!
+							</DialogDescription>
+						</div>
+					</div>
 				</DialogHeader>
+
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(handleSubmit)}
-						className="space-y-8"
+						className="space-y-6"
 					>
 						<FormField
 							control={control}
 							name="name"
 							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Group Name</FormLabel>
+								<FormItem className="space-y-2">
+									<FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+										Group Name
+									</FormLabel>
 									<FormControl>
-										<Input placeholder="Group name..." {...field} />
+										<Input
+											placeholder="Enter group name..."
+											{...field}
+											className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 rounded-xl"
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
+
 						<FormField
 							control={control}
 							name="members"
 							render={() => (
-								<FormItem>
-									<FormLabel>Friends</FormLabel>
+								<FormItem className="space-y-2">
+									<FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+										Add Friends
+									</FormLabel>
 									<FormControl>
 										<DropdownMenu>
 											<DropdownMenuTrigger
 												asChild
 												disabled={unselectedFriends.length === 0}
 											>
-												<Button className="w-full" variant="outline">
-													Select
+												<Button
+													variant="outline"
+													className={cn(
+														"w-full justify-between rounded-xl bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-primary/50 transition-all duration-300",
+														unselectedFriends.length === 0 &&
+															"opacity-50 cursor-not-allowed"
+													)}
+												>
+													<span className="text-gray-600 dark:text-gray-400">
+														{unselectedFriends.length === 0
+															? "No friends available"
+															: "Select friends"}
+													</span>
+													<ChevronDown className="h-4 w-4 text-gray-500" />
 												</Button>
 											</DropdownMenuTrigger>
-											<DropdownMenuContent className="w-full">
-												{unselectedFriends?.map((friend) => {
-													return (
-														<DropdownMenuCheckboxItem
-															key={friend._id}
-															className="flex items-center gap-2 w-full p-2"
-															onCheckedChange={(checked) => {
-																if (checked) {
-																	setValue("members", [...members, friend._id]);
-																}
-															}}
-														>
-															<Avatar className="w-8 h-8">
-																<AvatarImage src={friend.imageUrl} />
-																<AvatarFallback>
-																	{friend.username.substring(0, 1)}
-																</AvatarFallback>
-															</Avatar>
-															<h4 className="truncate">{friend.username}</h4>
-														</DropdownMenuCheckboxItem>
-													);
-												})}
+											<DropdownMenuContent className="w-full min-w-[300px] bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-xl rounded-xl">
+												{unselectedFriends?.map((friend) => (
+													<DropdownMenuCheckboxItem
+														key={friend._id}
+														className="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 rounded-lg mx-1"
+														onCheckedChange={(checked) => {
+															if (checked) {
+																setValue("members", [...members, friend._id]);
+															}
+														}}
+													>
+														<Avatar className="w-8 h-8 border-2 border-gray-200 dark:border-gray-600 shadow-sm">
+															<AvatarImage
+																src={friend.imageUrl || "/placeholder.svg"}
+																className="object-cover"
+															/>
+															<AvatarFallback className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs font-semibold">
+																{friend.username.substring(0, 1).toUpperCase()}
+															</AvatarFallback>
+														</Avatar>
+														<span className="font-medium text-gray-900 dark:text-gray-100 truncate">
+															{friend.username}
+														</span>
+													</DropdownMenuCheckboxItem>
+												))}
 											</DropdownMenuContent>
 										</DropdownMenu>
 									</FormControl>
@@ -178,44 +219,71 @@ const CreateGroupDialog = () => {
 								</FormItem>
 							)}
 						/>
-						{members && members.length ? (
-							<Card className="flex items-center gap-3 overflow-x-auto w-full h-24 p-2 no-scrollbar">
-								{friends
-									?.filter((friend) => members.includes(friend._id))
-									.map((friend) => {
-										return (
-											<div
-												key={friend._id}
-												className="flex flex-col items-center gap-1"
-											>
-												<div className="relative">
-													<Avatar>
-														<AvatarImage src={friend.imageUrl} />
-														<AvatarFallback>
-															{friend.username.substring(0, 1)}
-														</AvatarFallback>
-													</Avatar>
-													<X
-														className="text-muted-foreground w-4 h-4 absolute bottom-8 left-7 bg-muted rounded-full cursor-pointer"
-														onClick={() =>
-															setValue(
-																"members",
-																members.filter((id) => id !== friend._id)
-															)
-														}
-													/>
+
+						{members && members.length > 0 && (
+							<div className="space-y-2">
+								<label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+									Selected Members ({members.length})
+								</label>
+								<Card className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600 rounded-xl shadow-sm">
+									<div className="flex items-center gap-3 overflow-x-auto p-4 no-scrollbar">
+										{friends
+											?.filter((friend) => members.includes(friend._id))
+											.map((friend) => (
+												<div
+													key={friend._id}
+													className="flex flex-col items-center gap-2 min-w-fit group"
+												>
+													<div className="relative">
+														<Avatar className="w-12 h-12 border-2 border-gray-200 dark:border-gray-600 shadow-md transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-lg">
+															<AvatarImage
+																src={friend.imageUrl || "/placeholder.svg"}
+																className="object-cover"
+															/>
+															<AvatarFallback className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-semibold">
+																{friend.username.substring(0, 1).toUpperCase()}
+															</AvatarFallback>
+														</Avatar>
+														<button
+															type="button"
+															onClick={() =>
+																setValue(
+																	"members",
+																	members.filter((id) => id !== friend._id)
+																)
+															}
+															className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md hover:scale-110"
+														>
+															<X className="w-3 h-3" />
+														</button>
+													</div>
+													<p className="text-xs font-medium text-gray-600 dark:text-gray-400 truncate max-w-16 text-center">
+														{friend?.username?.split(" ")[0]}
+													</p>
 												</div>
-												<p className="truncate text-sm">
-													{friend?.username?.split(" ")[0]}
-												</p>
-											</div>
-										);
-									})}
-							</Card>
-						) : null}
-						<DialogFooter>
-							<Button disabled={pending} type="submit">
-								Create
+											))}
+									</div>
+								</Card>
+							</div>
+						)}
+
+						<DialogFooter className="pt-4">
+							<Button
+								type="submit"
+								disabled={pending}
+								className={cn(
+									"w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed",
+									pending && "animate-pulse"
+								)}
+							>
+								{pending ? (
+									<div className="flex items-center gap-2">
+										<div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+										Creating...
+									</div>
+								) : (
+									"Create Group"
+								)}
 							</Button>
 						</DialogFooter>
 					</form>

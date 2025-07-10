@@ -20,8 +20,6 @@ const MessageReactions = ({ fromCurrentUser }: Props) => {
 
 	const handleReaction = (reaction: Reaction) => {
 		setSelectedReaction(reaction);
-		// Here you would typically call a mutation to save the reaction
-		// For now we'll just update the UI
 	};
 
 	return (

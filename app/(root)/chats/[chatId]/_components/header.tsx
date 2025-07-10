@@ -22,6 +22,7 @@ type Props = {
 		onClick: () => void;
 	}[];
 	setCallType: Dispatch<SetStateAction<"audio" | "video" | null>>;
+	isGroup?: boolean;
 };
 
 const Header = ({ imageUrl, name, options, setCallType }: Props) => {
@@ -32,7 +33,7 @@ const Header = ({ imageUrl, name, options, setCallType }: Props) => {
 	};
 
 	return (
-		<div className="w-full flex items-center justify-between p-4 bg-background border-b">
+		<div className="h-15 w-full flex items-center justify-between p-4 bg-background border-b">
 			<div className="flex items-center gap-3">
 				<Button
 					variant="ghost"

@@ -2,14 +2,13 @@
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
-import { motion } from "framer-motion";
 import { use, useState } from "react";
 import RemoveFriendDialog from "../../friends/_components/remove-friend-dialog";
-import AnimatedHeader from "./_components/animated-header";
 import Body from "./_components/body/body";
 import DeleteGroupDialog from "./_components/dialogs/delete-group-dialog";
 import LeaveGroupDialog from "./_components/dialogs/leave-group-dialog";
 import ChatInput from "./_components/input/chat-input";
+import Header from "./_components/header";
 
 const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 	const { chatId } = use(params);
@@ -22,7 +21,7 @@ const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 	const [callType, setCallType] = useState<"audio" | "video" | null>(null);
 
 	const header = () => (
-		<AnimatedHeader
+		<Header
 			imageUrl={chat?.isGroup ? undefined : chat?.otherMember?.imageUrl}
 			name={(chat?.isGroup ? chat?.name : chat?.otherMember?.username) || ""}
 			options={
@@ -71,12 +70,7 @@ const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 				setOpen={setLeaveGroupDialogOpen}
 			/>
 
-			<motion.div
-				className="flex flex-col h-full w-full"
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				transition={{ duration: 0.3 }}
-			>
+			<div className="flex flex-col h-full w-full">
 				<div className="flex-shrink-0 z-10 bg-background sticky top-0">
 					{header()}
 				</div>
@@ -98,7 +92,7 @@ const ChatPage = ({ params }: { params: Promise<{ chatId: Id<"chats"> }> }) => {
 				<div className="flex-shrink-0 z-10 bg-background sticky bottom-0">
 					<ChatInput />
 				</div>
-			</motion.div>
+			</div>
 		</>
 	);
 };

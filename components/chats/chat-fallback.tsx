@@ -1,12 +1,10 @@
 import Image from "next/image";
 import { Card } from "../ui/card";
-import { ResizablePanel } from "../ui/resizable";
 
 const ChatFallback = () => {
 	return (
-		<ResizablePanel className="hidden md:flex flex-col gap-2 p-2">
-			<Card className="hidden w-full h-full md:flex p-2 items-center justify-center bg-secondary text-secondary-foreground">
-				{/* Select/start a conversation to get started */}
+		<div className="h-full w-full flex flex-col">
+			<Card className="w-full h-full flex flex-col items-center justify-center bg-secondary text-secondary-foreground">
 				<Image
 					src="/logo.svg"
 					alt="logo"
@@ -15,9 +13,9 @@ const ChatFallback = () => {
 					priority
 					className="animate-pulse duration-800"
 				/>
-				<p>Gotta lock in and socialize</p>
+				<p className="mt-4">Gotta lock in and socialize</p>
 			</Card>
-		</ResizablePanel>
+		</div>
 	);
 };
 

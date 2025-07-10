@@ -18,7 +18,7 @@ const Friends = () => {
 		requests ? (
 			requests.length === 0 ? (
 				<p className="w-full h-full flex items-center justify-center">
-					No Friend Request found :(
+					No Friend Request found
 				</p>
 			) : (
 				requests.map((request) => (

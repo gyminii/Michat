@@ -8,13 +8,10 @@ import {
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import type React from "react";
-// import { AnimatedChatItem } from "./_components/animated-chat-item";
-import { AnimatedChatItem } from "./_components/animated-chat-item";
-
 import CreateGroupDialog from "./[chatId]/_components/dialogs/create-group-dialog";
 import { useChat } from "@/hooks/use-chat";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { motion } from "framer-motion";
+import { ChatItem } from "./_components/chat-item";
 
 type Props = {
 	children: React.ReactNode;
@@ -27,17 +24,12 @@ const ChatLayout = ({ children }: Props) => {
 
 	const renderChat = () =>
 		chats?.length === 0 ? (
-			<motion.p
-				className="w-full h-full flex items-center justify-center"
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				transition={{ delay: 0.3 }}
-			>
+			<p className="w-full h-full flex items-center justify-center">
 				No chats found
-			</motion.p>
+			</p>
 		) : (
 			chats?.map((chat, index) => (
-				<AnimatedChatItem
+				<ChatItem
 					key={chat.chat._id}
 					id={chat.chat._id}
 					isGroup={chat.chat.isGroup}
@@ -52,23 +44,17 @@ const ChatLayout = ({ children }: Props) => {
 			))
 		);
 
-	// For mobile: show either the chat list or the active chat, not both
 	if (isMobile) {
 		return (
 			<div className="h-full w-full overflow-hidden flex flex-col">
 				{isActive ? (
-					children
+					<div className="h-full w-full flex flex-col">{children}</div>
 				) : (
 					<div className="flex flex-col h-full w-full">
-						<motion.div
-							className="flex flex-row justify-between items-center p-4 border-b"
-							initial={{ opacity: 0, y: -20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.3 }}
-						>
+						<div className="flex flex-row justify-between items-center p-4 border-b">
 							<h1 className="text-xl font-semibold">Chats</h1>
 							<CreateGroupDialog />
-						</motion.div>
+						</div>
 						<div className="flex-1 overflow-y-auto p-2 space-y-2">
 							{renderChat()}
 						</div>
@@ -80,31 +66,28 @@ const ChatLayout = ({ children }: Props) => {
 
 	// For desktop: show the resizable panels
 	return (
-		<ResizablePanelGroup
-			id="chat-main-panel"
-			direction="horizontal"
-			className="h-full w-full"
-		>
-			<ResizablePanel defaultSize={25} minSize={15} className="flex flex-col">
-				<motion.div
-					className="flex flex-row justify-between items-center p-4 border-b"
-					initial={{ opacity: 0, y: -20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.3 }}
-				>
-					<h1 className="text-xl font-semibold">Chats</h1>
-					<CreateGroupDialog />
-				</motion.div>
-				<div className="flex-1 overflow-y-auto p-2 space-y-2">
-					{renderChat()}
-				</div>
-			</ResizablePanel>
-			<ResizableHandle withHandle className="hidden md:flex" />
-			{/* Actual Chat Panel */}
-			<ResizablePanel defaultSize={75} className="flex flex-col">
-				{children}
-			</ResizablePanel>
-		</ResizablePanelGroup>
+		<div className="h-full w-full bg-white rounded-xl shadow-lg overflow-hidden">
+			<ResizablePanelGroup
+				id="chat-main-panel"
+				direction="horizontal"
+				className="h-full w-full"
+			>
+				<ResizablePanel defaultSize={25} minSize={15} className="flex flex-col">
+					<div className="h-15 flex flex-row justify-between items-center p-4 border-b">
+						<h1 className="text-xl font-semibold">Chats</h1>
+						<CreateGroupDialog />
+					</div>
+					<div className="flex-1 overflow-y-auto p-2 space-y-2">
+						{renderChat()}
+					</div>
+				</ResizablePanel>
+				<ResizableHandle withHandle className="hidden md:flex" />
+				{/* Actual Chat Panel */}
+				<ResizablePanel defaultSize={75} className="flex flex-col h-full">
+					<div className="h-full w-full">{children}</div>
+				</ResizablePanel>
+			</ResizablePanelGroup>
+		</div>
 	);
 };
 

@@ -19,8 +19,10 @@ import {
 	useRef,
 	useState,
 } from "react";
-import AnimatedMessage from "./animated-messages";
+// import Message from "./animated-messages";
+
 import CallRoom from "./call-room";
+import Message from "./message";
 
 type Props = {
 	members: {
@@ -156,20 +158,6 @@ const Body = ({ members, callType, setCallType }: Props) => {
 	return (
 		<div className="h-full w-full overflow-y-auto p-4 pb-2">
 			<div className="flex flex-col-reverse gap-4 min-h-full">
-				{/* <div ref={messagesEndRef} />
-
-				<AnimatePresence>
-					{isTyping && !callType && (
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -20 }}
-						>
-							<TypingIndicator />
-						</motion.div>
-					)}
-				</AnimatePresence> */}
-
 				{!callType ? (
 					<motion.div layout className="flex flex-col-reverse gap-4">
 						{messages?.map(
@@ -187,7 +175,8 @@ const Body = ({ members, callType, setCallType }: Props) => {
 
 								return (
 									<div key={message._id}>
-										<AnimatedMessage
+										<Message
+											messageId={message._id}
 											key={message._id}
 											fromCurrentUser={isCurrentUser}
 											senderImage={senderImage}
@@ -198,7 +187,6 @@ const Body = ({ members, callType, setCallType }: Props) => {
 											type={message.type}
 											seen={seenMessage}
 											isNew={isNewMessage}
-											messageId={message._id}
 										/>
 									</div>
 								);
