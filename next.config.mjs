@@ -30,15 +30,15 @@ const nextConfig = {
 			},
 		],
 	},
-	// async redirects() {
-	// 	return [
-	// 		{
-	// 			source: "/",
-	// 			destination: "/chats",
-	// 			permanent: true,
-	// 		},
-	// 	];
-	// },
+	async redirects() {
+		return [
+			{
+				source: "/",
+				destination: "/chats",
+				permanent: true,
+			},
+		];
+	},
 };
 export default withPWA({
 	dest: "public",
