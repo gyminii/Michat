@@ -1,6 +1,12 @@
+"use client";
+import { useConvexAuth } from "convex/react";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
-export default async function RootPage() {
+export default function RootPage() {
+	const { isAuthenticated } = useConvexAuth();
+	if (isAuthenticated) redirect("/chats");
+
 	return (
 		<div className="flex-1 flex items-center justify-center">
 			<div className="text-center space-y-4">

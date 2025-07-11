@@ -9,7 +9,6 @@ type Props = {
 };
 
 const layout = async ({ children }: Props) => {
-	console.log(1);
 	return (
 		<LayoutProvider>
 			<Authenticated>
