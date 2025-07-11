@@ -1,13 +1,6 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import Image from "next/image";
 
 export default async function RootPage() {
-	const { userId } = await auth();
-	if (userId) {
-		redirect("/chats");
-	}
-	redirect("/sign-in");
 	return (
 		<div className="flex-1 flex items-center justify-center">
 			<div className="text-center space-y-4">
