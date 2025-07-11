@@ -26,14 +26,7 @@ export const DMChatItem = ({
 }: Props) => {
 	const pathname = usePathname();
 	const isSelected = pathname === `/chats/${id}`;
-	console.log(
-		id,
-		imageUrl,
-		username,
-		lastMessageContent,
-		lastMessageSender,
-		unseenCount
-	);
+
 	return (
 		<Link href={`/chats/${id}`} className="w-full block">
 			<Card

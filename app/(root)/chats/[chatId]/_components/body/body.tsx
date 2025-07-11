@@ -154,9 +154,9 @@ const Body = ({ members, callType, setCallType }: Props) => {
 
 		return formatSeenBy(seenUsers);
 	};
-	console.log(messages);
+
 	return (
-		<div className="h-full w-full overflow-y-auto p-4 pb-2">
+		<div className="h-full w-full overflow-y-auto p-4 pb-2 bg-gray-50 dark:bg-gray-950">
 			<div className="flex flex-col-reverse gap-4 min-h-full">
 				{!callType ? (
 					<motion.div layout className="flex flex-col-reverse gap-4">

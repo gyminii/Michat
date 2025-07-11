@@ -1,3 +1,33 @@
-export default function Page() {
-	return <div>iasdfhasdf</div>;
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import Image from "next/image";
+
+export default async function RootPage() {
+	const { userId } = await auth();
+	if (userId) {
+		redirect("/chats");
+	}
+	redirect("/sign-in");
+	return (
+		<div className="flex-1 flex items-center justify-center">
+			<div className="text-center space-y-4">
+				<Image
+					src="/logo.svg"
+					alt="Michat Logo"
+					width={120}
+					height={120}
+					className="mx-auto animate-pulse duration-800"
+				/>
+				<div>
+					<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+						Welcome to Michat
+					</h2>
+					<p className="text-gray-600 dark:text-gray-400 max-w-md">
+						Connect with friends and start conversations. Choose Chats to see
+						your messages or Friends to manage your connections.
+					</p>
+				</div>
+			</div>
+		</div>
+	);
 }

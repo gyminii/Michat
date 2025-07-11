@@ -18,7 +18,7 @@ export const NavigationTabs = () => {
 						className={cn(
 							"w-full rounded-none border-b-2 h-12 relative",
 							item.active
-								? "border-purple-500 text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20"
+								? "border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
 								: "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
 						)}
 					>
@@ -29,7 +29,7 @@ export const NavigationTabs = () => {
 								className={cn(
 									"ml-2 h-5 min-w-5 text-xs",
 									item.active
-										? "bg-purple-500 dark:bg-purple-600 text-white"
+										? "bg-blue-500 dark:bg-blue-600 text-white"
 										: "bg-red-500 dark:bg-red-600 text-white"
 								)}
 							>
