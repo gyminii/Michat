@@ -1,6 +1,4 @@
 import LayoutProvider from "@/providers/layout-provider";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import type React from "react";
 
 type Props = {
@@ -8,9 +6,9 @@ type Props = {
 };
 
 const layout = async ({ children }: Props) => {
-	const { userId } = await auth();
+	// const { userId } = await auth();
 
-	if (!userId) redirect("/sign-in");
+	// if (!userId) redirect("/sign-in");
 
 	return (
 		<LayoutProvider>
