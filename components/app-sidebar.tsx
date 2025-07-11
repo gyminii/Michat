@@ -110,18 +110,14 @@ export const SidebarLayout = ({
 								Michat
 							</span>
 						</div>
-						<Button variant="ghost" size="icon" className="h-8 w-8">
-							<Settings className="h-4 w-4" />
-						</Button>
+						<ThemeToggleButton />
 					</div>
 					<NavigationTabs />
 					<div className="flex-1 overflow-hidden flex flex-col">
 						<div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
-							{sidebarTitle && (
-								<h2 className="font-medium text-gray-900 dark:text-gray-100">
-									{sidebarTitle}
-								</h2>
-							)}
+							<h2 className="font-medium text-gray-900 dark:text-gray-100">
+								{sidebarTitle}
+							</h2>
 							{sidebarAction}
 						</div>
 						<ScrollArea className="flex-1 p-2">{sidebarContent}</ScrollArea>

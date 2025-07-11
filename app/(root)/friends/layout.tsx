@@ -67,13 +67,13 @@ const FriendsLayout = ({ children }: Props) => {
 		</div>
 	);
 
-	if (isMobile) {
-		return (
-			<div className="flex flex-col h-full">
-				<div className="flex-1 overflow-hidden">{children}</div>
-			</div>
-		);
-	}
+	// if (isMobile) {
+	// 	return (
+	// 		<div className="flex flex-col h-full">
+	// 			<div className="flex-1 overflow-hidden">s{children}</div>
+	// 		</div>
+	// 	);
+	// }
 
 	return (
 		<SidebarLayout
