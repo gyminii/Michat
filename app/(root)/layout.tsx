@@ -1,4 +1,7 @@
+"use client";
 import LayoutProvider from "@/providers/layout-provider";
+import { RedirectToSignIn } from "@clerk/nextjs";
+import { Authenticated, Unauthenticated } from "convex/react";
 import type React from "react";
 
 type Props = {
@@ -6,15 +9,17 @@ type Props = {
 };
 
 const layout = async ({ children }: Props) => {
-	// const { userId } = await auth();
-
-	// if (!userId) redirect("/sign-in");
-
+	console.log(1);
 	return (
 		<LayoutProvider>
-			<div className="h-full w-full bg-gray-100 dark:bg-gray-950 p-0 md:p-4">
-				{children}
-			</div>
+			<Authenticated>
+				<div className="h-full w-full bg-gray-100 dark:bg-gray-950 p-0 md:p-4">
+					{children}
+				</div>
+			</Authenticated>
+			<Unauthenticated>
+				<RedirectToSignIn />
+			</Unauthenticated>
 		</LayoutProvider>
 	);
 };
