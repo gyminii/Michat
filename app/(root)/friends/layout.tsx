@@ -7,9 +7,8 @@ import AddFriendDialog from "./_components/add-friend-dialog";
 import Request from "./_components/request";
 
 import { SidebarLayout } from "@/components/app-sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
-import FriendItem from "./_components/friend-item";
 import { UserPlus, Users } from "lucide-react";
+import FriendItem from "./_components/friend-item";
 
 type Props = {
 	children: React.ReactNode;
@@ -18,7 +17,6 @@ type Props = {
 const FriendsLayout = ({ children }: Props) => {
 	const requests = useQuery(api.requests.get);
 	const friends = useQuery(api.friends.get);
-	const isMobile = useIsMobile();
 	const sidebarContent = (
 		<div className="space-y-4">
 			{requests && requests.length > 0 && (
