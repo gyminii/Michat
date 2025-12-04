@@ -11,16 +11,13 @@
 		"moduleResolution": "bundler",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"jsx": "preserve",
+		"jsx": "react-jsx",
 		"incremental": true,
-		"plugins": [
-			{
-				"name": "next"
-			}
-		],
+		"plugins": [{ "name": "next" }],
 		"paths": {
 			"@/*": ["./*"]
-		}
+		},
+		"types": ["node"]
 	},
 	"include": [
 		"next-env.d.ts",
@@ -28,7 +25,8 @@
 		"**/*.tsx",
 		".next/types/**/*.ts",
 		"lib/next-pwa-wrapper.cjs",
-		"next.config.mjs"
+		"next.config.mjs",
+		".next/dev/types/**/*.ts"
 	],
 	"exclude": ["node_modules"]
 }
