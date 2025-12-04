@@ -6,6 +6,7 @@ const nextConfig = {
 		removeConsole: process.env.NODE_ENV !== "development",
 	},
 	turbopack: {},
+	outputFileTracingRoot: import.meta.dirname,
 	reactStrictMode: true,
 	images: {
 		remotePatterns: [
