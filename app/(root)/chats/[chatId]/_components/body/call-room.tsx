@@ -27,7 +27,7 @@ const CallRoom = ({ audio, video, handleDisconnect }: Props) => {
 			try {
 				const res = await fetch(`/api/livekit?room=${chatId}`);
 				if (!res.ok) throw new Error("Could not get a call token");
-				const data = await res.json();
+				const data = (await res.json()) as { token: string };
 
 				setToken(data.token);
 			} catch (error) {

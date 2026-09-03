@@ -1,9 +1,12 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
-import EmojiPicker, { type Theme } from "emoji-picker-react";
+import dynamic from "next/dynamic";
+import { type Theme } from "emoji-picker-react";
 import { useTheme } from "next-themes";
 import { useRef, useEffect } from "react";
+
+const EmojiPicker = dynamic(() => import("emoji-picker-react"), { ssr: false });
 
 type Props = {
 	isOpen: boolean;
