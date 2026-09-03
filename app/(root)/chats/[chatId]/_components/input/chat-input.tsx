@@ -4,6 +4,7 @@ import type React from "react";
 
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import { useChat } from "@/hooks/use-chat";
 import { useMutationState } from "@/hooks/use-mutation-state";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,7 +72,7 @@ const ChatInput = () => {
 		if (isEmpty) return;
 
 		createMessage({
-			chatId,
+			chatId: chatId as Id<"chats">,
 			type: "text",
 			content: [values.content],
 		})

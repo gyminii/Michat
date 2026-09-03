@@ -33,6 +33,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import { useMutationState } from "@/hooks/use-mutation-state";
 import { cn } from "@/lib/utils";
 
@@ -79,7 +80,10 @@ const CreateGroupDialog = () => {
 	const handleSubmit = async (
 		values: z.infer<typeof createGroupFormSchema>
 	) => {
-		await createGroup({ name: values.name, members: values.members })
+		await createGroup({
+			name: values.name,
+			members: values.members as Id<"users">[],
+		})
 			.then(() => {
 				reset();
 				toast.success("Group created!");

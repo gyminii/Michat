@@ -3,12 +3,13 @@
 import React, {
 	createContext,
 	useContext,
-	useEffect,
-	useState,
+	useSyncExternalStore,
 	type ReactNode,
 } from "react";
 
 type Layout = "full" | "fixed";
+
+const layoutListeners = new Set<() => void>();
 
 const ThemeLayoutContext = createContext<ThemeLayoutContextType | undefined>(
 	undefined
@@ -36,12 +37,36 @@ function getCookie(name: string): string | null {
 	return null;
 }
 
+function subscribeToLayout(callback: () => void) {
+	layoutListeners.add(callback);
+	return () => layoutListeners.delete(callback);
+}
+
+function getLayoutSnapshot(): Layout {
+	const saved = getCookie("layout") as Layout | null;
+	return saved === "full" || saved === "fixed" ? saved : "full";
+}
+
+function getServerLayoutSnapshot(): Layout {
+	return "full";
+}
+
 export function useLayout() {
 	const context = useContext(ThemeLayoutContext);
 	if (context === undefined) {
 		throw new Error("useLayout must be used within a ThemeProvider");
 	}
 	return context;
+}
+
+const emptySubscribe = () => () => {};
+
+function useIsClient() {
+	return useSyncExternalStore(
+		emptySubscribe,
+		() => true,
+		() => false
+	);
 }
 
 export function useLayoutClasses() {
@@ -53,18 +78,15 @@ export function useLayoutClasses() {
 }
 
 const LayoutProvider = ({ children }: { children: ReactNode }) => {
-	const [layout, setLayoutState] = useState<Layout>("full");
-	const [isClient, setIsClient] = useState(false);
-	useEffect(() => {
-		setIsClient(true);
-		const savedLayout = getCookie("layout") as Layout;
-		if (savedLayout === "full" || savedLayout === "fixed") {
-			setLayoutState(savedLayout);
-		}
-	}, []);
+	const layout = useSyncExternalStore(
+		subscribeToLayout,
+		getLayoutSnapshot,
+		getServerLayoutSnapshot
+	);
+	const isClient = useIsClient();
 	const setLayout = (newLayout: Layout) => {
-		setLayoutState(newLayout);
 		setCookie("layout", newLayout);
+		layoutListeners.forEach((listener) => listener());
 	};
 
 	return (

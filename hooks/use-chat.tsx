@@ -6,10 +6,10 @@ import { useMemo } from "react";
 export const useChat = () => {
 	const params = useParams();
 	const router = useRouter();
-	const chatId = useMemo(
-		() => params?.chatId || ("" as string),
-		[params?.chatId]
-	);
+	const chatId = useMemo(() => {
+		const value = params?.chatId;
+		return (Array.isArray(value) ? value[0] : value) ?? "";
+	}, [params?.chatId]);
 	const isActive = useMemo(() => !!chatId, [chatId]);
 
 	const navigateToChat = (id: string) => {

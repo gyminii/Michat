@@ -22,6 +22,67 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const UserSection = ({
+	user,
+	onSignOut,
+}: {
+	user: ReturnType<typeof useUser>["user"];
+	onSignOut: () => void;
+}) => (
+	<div className="p-4 border-t border-gray-200 dark:border-gray-700">
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button
+					variant="ghost"
+					className="w-full justify-start p-2 h-auto hover:bg-gray-100 dark:hover:bg-gray-800"
+				>
+					<div className="flex items-center gap-3 w-full">
+						<Avatar className="h-8 w-8">
+							<AvatarImage
+								src={user?.imageUrl || "/placeholder.svg"}
+								alt={user?.fullName || "User"}
+							/>
+							<AvatarFallback className="bg-blue-600 text-white text-sm">
+								{user?.fullName?.charAt(0) ||
+									user?.emailAddresses[0]?.emailAddress.charAt(0) ||
+									"U"}
+							</AvatarFallback>
+						</Avatar>
+						<div className="flex flex-col items-start flex-1 min-w-0">
+							<span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+								{user?.fullName ||
+									user?.emailAddresses[0]?.emailAddress.split("@")[0] ||
+									"User"}
+							</span>
+							<span className="text-xs text-gray-500 dark:text-gray-400 truncate">
+								{user?.emailAddresses[0]?.emailAddress}
+							</span>
+						</div>
+					</div>
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align="end" className="w-56">
+				<DropdownMenuItem>
+					<User className="mr-2 h-4 w-4" />
+					Profile
+				</DropdownMenuItem>
+				<DropdownMenuItem>
+					<Settings className="mr-2 h-4 w-4" />
+					Settings
+				</DropdownMenuItem>
+				<DropdownMenuSeparator />
+				<DropdownMenuItem
+					onClick={onSignOut}
+					className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
+				>
+					<LogOut className="mr-2 h-4 w-4" />
+					Sign out
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	</div>
+);
+
 type Props = {
 	children: React.ReactNode;
 	sidebarContent: React.ReactNode;
@@ -41,61 +102,6 @@ export const SidebarLayout = ({
 	const isMobile = useIsMobile();
 	const { user } = useUser();
 	const { signOut } = useClerk();
-
-	const UserSection = () => (
-		<div className="p-4 border-t border-gray-200 dark:border-gray-700">
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button
-						variant="ghost"
-						className="w-full justify-start p-2 h-auto hover:bg-gray-100 dark:hover:bg-gray-800"
-					>
-						<div className="flex items-center gap-3 w-full">
-							<Avatar className="h-8 w-8">
-								<AvatarImage
-									src={user?.imageUrl || "/placeholder.svg"}
-									alt={user?.fullName || "User"}
-								/>
-								<AvatarFallback className="bg-blue-600 text-white text-sm">
-									{user?.fullName?.charAt(0) ||
-										user?.emailAddresses[0]?.emailAddress.charAt(0) ||
-										"U"}
-								</AvatarFallback>
-							</Avatar>
-							<div className="flex flex-col items-start flex-1 min-w-0">
-								<span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-									{user?.fullName ||
-										user?.emailAddresses[0]?.emailAddress.split("@")[0] ||
-										"User"}
-								</span>
-								<span className="text-xs text-gray-500 dark:text-gray-400 truncate">
-									{user?.emailAddresses[0]?.emailAddress}
-								</span>
-							</div>
-						</div>
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end" className="w-56">
-					<DropdownMenuItem>
-						<User className="mr-2 h-4 w-4" />
-						Profile
-					</DropdownMenuItem>
-					<DropdownMenuItem>
-						<Settings className="mr-2 h-4 w-4" />
-						Settings
-					</DropdownMenuItem>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem
-						onClick={() => signOut({ redirectUrl: "/sign-in" })}
-						className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
-					>
-						<LogOut className="mr-2 h-4 w-4" />
-						Sign out
-					</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
-		</div>
-	);
 
 	if (isMobile) {
 		if (showOnMobile) {
@@ -122,7 +128,7 @@ export const SidebarLayout = ({
 						</div>
 						<ScrollArea className="flex-1 p-2">{sidebarContent}</ScrollArea>
 					</div>
-					<UserSection />
+					<UserSection user={user} onSignOut={() => signOut({ redirectUrl: "/sign-in" })} />
 				</div>
 			);
 		} else {
@@ -164,7 +170,7 @@ export const SidebarLayout = ({
 						<ScrollArea className="flex-1 p-2">{sidebarContent}</ScrollArea>
 					</div>
 					{/* User Info */}
-					<UserSection />
+					<UserSection user={user} onSignOut={() => signOut({ redirectUrl: "/sign-in" })} />
 				</ResizablePanel>
 				<ResizableHandle withHandle />
 				<ResizablePanel defaultSize={70} className="flex flex-col">

@@ -16,6 +16,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import { useChat } from "@/hooks/use-chat";
 import { useMutationState } from "@/hooks/use-mutation-state";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,10 +62,14 @@ const UploadFileDialog = ({ open, toggle, type }: Props) => {
 	const onSubmit = async ({ files }: FormValues) => {
 		try {
 			const data = await startUpload(files);
+			if (!data) {
+				toast.error("Upload failed");
+				return;
+			}
 			await createMessage({
-				content: data?.map((file) => file.ufsUrl),
+				content: data.map((file) => file.ufsUrl),
 				type,
-				chatId,
+				chatId: chatId as Id<"chats">,
 			})
 				.then(() => {
 					form.reset();

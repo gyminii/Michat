@@ -3,13 +3,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import { useMutationState } from "@/hooks/use-mutation-state";
 import { ConvexError } from "convex/values";
 import { Check, X } from "lucide-react";
 import { toast } from "sonner";
 
 type Props = {
-	id: string;
+	id: Id<"requests">;
 	imageUrl: string;
 	username: string;
 	email: string;

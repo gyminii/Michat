@@ -42,6 +42,7 @@ const Body = ({ members, callType, setCallType }: Props) => {
 	});
 	// const [isTyping, setIsTyping] = useState(false);
 	const [newMessageIds, setNewMessageIds] = useState<string[]>([]);
+	const [prevMessages, setPrevMessages] = useState(messages);
 
 	const { mutate: markRead } = useMutationState(api.chat.markRead);
 	const lastMarkedIdRef = useRef<string | null>(null);
@@ -67,20 +68,19 @@ const Body = ({ members, callType, setCallType }: Props) => {
 	// 	}
 	// }, [messages]);
 
-	// Track new messages
-	useEffect(() => {
-		if (!messages || messages.length === 0) return;
+	// Track new messages (derived during render to avoid a cascading effect render)
+	if (messages && messages !== prevMessages) {
+		setPrevMessages(messages);
 
 		const currentIds = messages.map((m) => m.message._id);
-		const prevIds = newMessageIds;
 
 		// Find messages that weren't in the previous render
-		const newIds = currentIds.filter((id) => !prevIds.includes(id));
+		const newIds = currentIds.filter((id) => !newMessageIds.includes(id));
 
 		if (newIds.length > 0) {
 			setNewMessageIds(currentIds);
 		}
-	}, [messages, newMessageIds]);
+	}
 
 	useEffect(() => {
 		if (!messages || messages.length === 0) return;
@@ -89,7 +89,7 @@ const Body = ({ members, callType, setCallType }: Props) => {
 
 		if (!first.isCurrentUser && first.message._id !== lastMarkedIdRef.current) {
 			markRead({
-				chatId,
+				chatId: chatId as Id<"chats">,
 				messageId: first.message._id,
 			});
 			lastMarkedIdRef.current = first.message._id;

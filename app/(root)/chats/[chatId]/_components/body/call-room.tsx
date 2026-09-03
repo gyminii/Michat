@@ -1,9 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import { useChat } from "@/hooks/use-chat";
 import { useMutationState } from "@/hooks/use-mutation-state";
-import { useUser } from "@clerk/nextjs";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -17,22 +17,16 @@ type Props = {
 };
 
 const CallRoom = ({ audio, video, handleDisconnect }: Props) => {
-	const { user } = useUser();
 	const [token, setToken] = useState("");
 
 	const { chatId } = useChat();
 
 	const { mutate: createMessage } = useMutationState(api.message.create);
-	console.log(user);
 	useEffect(() => {
-		if (!user?.fullName) return;
 		(async () => {
 			try {
-				const res = await fetch(
-					`/api/livekit?room=${chatId}&username=${
-						user.fullName
-					} (${Math.floor(Math.random() * 2000)})`
-				);
+				const res = await fetch(`/api/livekit?room=${chatId}`);
+				if (!res.ok) throw new Error("Could not get a call token");
 				const data = await res.json();
 
 				setToken(data.token);
@@ -41,7 +35,7 @@ const CallRoom = ({ audio, video, handleDisconnect }: Props) => {
 				toast.error("Could not join the call");
 			}
 		})();
-	}, [user?.fullName, chatId]);
+	}, [chatId]);
 
 	if (token === "") {
 		return (
@@ -70,7 +64,7 @@ const CallRoom = ({ audio, video, handleDisconnect }: Props) => {
 				onDisconnected={() => handleDisconnect()}
 				onConnected={() => {
 					createMessage({
-						chatId,
+						chatId: chatId as Id<"chats">,
 						type: "call",
 						content: [],
 					});

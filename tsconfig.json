@@ -30,7 +30,6 @@
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts",
-		"lib/next-pwa-wrapper.cjs",
 		"next.config.mjs",
 		".next/dev/types/**/*.ts"
 	],
