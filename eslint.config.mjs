@@ -5,7 +5,7 @@ const eslintConfig = [
 	...nextCoreWebVitals,
 	...nextTypescript,
 	{
-		ignores: ["convex/_generated/**", "cloudflare-env.d.ts", ".open-next/**", "bundled/**"],
+		ignores: ["convex/_generated/**", "cloudflare-env.d.ts", ".open-next/**", "bundled/**", ".wrangler/**"],
 	},
 ];
 
