@@ -11,7 +11,7 @@ import { useChat } from "@/hooks/use-chat";
 import { useMutationState } from "@/hooks/use-mutation-state";
 import { TooltipContent } from "@radix-ui/react-tooltip";
 import { useQuery } from "convex/react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import {
 	type Dispatch,
 	type SetStateAction,

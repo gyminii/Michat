@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import EmojiPicker, { type Theme } from "emoji-picker-react";
 import { useTheme } from "next-themes";
 import { useRef, useEffect } from "react";
