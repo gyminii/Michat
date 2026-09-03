@@ -46,7 +46,7 @@
     "react-dropzone": "^20",
     "react-hook-form": "^7.87.0",
     "react-intersection-observer": "^10.1.0",
-    "react-resizable-panels": "^3.0.6",
+    "react-resizable-panels": "^4",
     "react-textarea-autosize": "^8.5.9",
     "sonner": "^2.0.8",
     "svix": "^2",

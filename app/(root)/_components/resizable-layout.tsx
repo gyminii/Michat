@@ -40,11 +40,11 @@ export function ResizableLayout({ children }: Props) {
 
 	return (
 		<div className="h-full w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
-			<ResizablePanelGroup direction="horizontal" className="h-full w-full">
+			<ResizablePanelGroup orientation="horizontal" className="h-full w-full">
 				<ResizablePanel
-					defaultSize={30}
-					minSize={20}
-					maxSize={40}
+					defaultSize="30%"
+					minSize="20%"
+					maxSize="40%"
 					className="flex flex-col border-r border-gray-200 dark:border-gray-700"
 				>
 					{/* Header */}
@@ -73,7 +73,7 @@ export function ResizableLayout({ children }: Props) {
 					</div>
 				</ResizablePanel>
 				<ResizableHandle withHandle />
-				<ResizablePanel defaultSize={70} className="flex flex-col">
+				<ResizablePanel defaultSize="70%" className="flex flex-col">
 					{children}
 				</ResizablePanel>
 			</ResizablePanelGroup>
