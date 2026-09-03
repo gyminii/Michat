@@ -21,7 +21,7 @@
 		"noEmit": true,
 
 		/* Explicitly control which type definitions to include */
-		"types": []
+		"types": ["node"]
 	},
 	"include": ["./**/*"],
 	"exclude": ["./_generated"]

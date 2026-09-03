@@ -22,8 +22,8 @@ const validatePayload = async (
 	};
 	const webhook = new Webhook(process.env.CLERK_WEBHOOK_SECRET || "");
 	try {
-		const event = webhook.verify(payload, svixHeaders) as WebhookEvent;
-		return event;
+		webhook.verify(payload, svixHeaders);
+		return JSON.parse(payload) as WebhookEvent;
 	} catch (error) {
 		console.log("Clerk webhook request could not be verified: ", error);
 		return;
